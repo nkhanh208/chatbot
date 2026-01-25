@@ -120,6 +120,7 @@
             animation: micPulse 1.5s infinite;
             background-color: #ef4444 !important;
             color: white !important;
+            border-color: #ef4444 !important;
         }
         @keyframes micPulse {
             0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
@@ -171,7 +172,7 @@
                     <span class="text-xs font-mono text-cyan-400 font-medium tracking-wider mb-1 flex items-center gap-2">BOT STARTING</span>
                     <div class="p-4 rounded-2xl rounded-tl-none bg-slate-800/80 border border-slate-700/50 shadow-sm backdrop-blur-sm">
                         <div class="markdown-body">
-                            <!-- NỘI DUNG LỜI CHÀO ĐÃ ĐƯỢC THAY ĐỔI -->
+                            <!-- NỘI DUNG LỜI CHÀO -->
                             <p>Chào bạn! 👋 Mình là <strong>BCK AI</strong>.</p>
                             <p>Mình có thể giúp bạn tìm sách, tra cứu thông tin thư viện, hoặc <strong>trò chuyện tự do</strong> về bất cứ chủ đề gì nhé! 😉</p>
                         </div>
@@ -212,8 +213,8 @@
                         class="w-full bg-transparent text-slate-200 placeholder-slate-500 text-sm px-2 py-3 focus:outline-none resize-none max-h-32"
                         oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
                     
-                    <!-- Voice Button -->
-                    <button id="voice-btn" class="p-3 text-slate-400 hover:text-cyan-400 transition-colors rounded-lg hover:bg-slate-800 mr-1" title="Nhập bằng giọng nói">
+                    <!-- Voice Button (Updated with type="button") -->
+                    <button type="button" id="voice-btn" class="p-3 text-slate-400 hover:text-cyan-400 transition-colors rounded-lg hover:bg-slate-800 mr-1 group relative" title="Nhập bằng giọng nói">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
                     </button>
 
@@ -290,44 +291,96 @@
             });
         }
 
-        // --- VOICE RECOGNITION SETUP ---
+        // --- VOICE RECOGNITION SETUP (FIXED & ROBUST) ---
         let recognition;
-        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        // Kiểm tra hỗ trợ trình duyệt
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        if (SpeechRecognition) {
             recognition = new SpeechRecognition();
-            recognition.continuous = false;
-            recognition.lang = 'vi-VN'; // Set Vietnamese as default
+            recognition.continuous = false; // Tắt continuous để tránh lỗi ngắt quãng mạng
+            recognition.lang = 'vi-VN'; 
             recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
 
             recognition.onstart = () => {
                 voiceBtn.classList.add('mic-active');
-                userInput.placeholder = "Đang nghe...";
+                voiceBtn.classList.remove('text-slate-400');
+                voiceBtn.classList.add('text-white');
+                userInput.placeholder = "Đang nghe... (Hãy nói gì đó)";
             };
 
             recognition.onend = () => {
                 voiceBtn.classList.remove('mic-active');
-                userInput.placeholder = "Nhập tin nhắn hoặc gửi ảnh...";
+                voiceBtn.classList.add('text-slate-400');
+                voiceBtn.classList.remove('text-white');
+                // Chỉ reset placeholder nếu chưa có nội dung
+                if (userInput.placeholder.includes("Đang nghe")) {
+                    userInput.placeholder = "Nhập tin nhắn hoặc gửi ảnh...";
+                }
                 userInput.focus();
             };
 
             recognition.onresult = (event) => {
                 const transcript = event.results[0][0].transcript;
                 userInput.value += (userInput.value ? ' ' : '') + transcript;
-                // Auto adjust height
                 userInput.style.height = 'auto';
                 userInput.style.height = userInput.scrollHeight + 'px';
             };
 
+            // Handle Errors Chi tiết hơn
+            recognition.onerror = (event) => {
+                console.warn("Speech API Error Detail:", event.error);
+                
+                voiceBtn.classList.remove('mic-active');
+                voiceBtn.classList.add('text-slate-400');
+                voiceBtn.classList.remove('text-white');
+                
+                let errorMsg = "Lỗi mic: " + event.error;
+                
+                if (event.error === 'network') {
+                    errorMsg = "Lỗi kết nối dịch vụ Giọng nói.";
+                    // Chỉ hiện alert 1 lần để không làm phiền
+                    if (!window.hasShownNetworkAlert) {
+                        alert("⚠️ Lỗi kết nối dịch vụ Giọng nói (Network Error)!\n\nNguyên nhân & Cách khắc phục:\n1. Tắt VPN hoặc AdBlock nếu đang bật.\n2. Sử dụng trình duyệt Google Chrome hoặc Microsoft Edge.\n3. Đảm bảo mạng ổn định.");
+                        window.hasShownNetworkAlert = true;
+                    }
+                } else if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+                    errorMsg = "Thiếu quyền truy cập Mic!";
+                    alert("⚠️ Vui lòng cấp quyền Microphone cho trang web này trên thanh địa chỉ.");
+                } else if (event.error === 'no-speech') {
+                    errorMsg = "Không nghe thấy gì. Thử lại nhé!";
+                } else if (event.error === 'audio-capture') {
+                    errorMsg = "Không tìm thấy Microphone.";
+                }
+                
+                userInput.placeholder = errorMsg;
+            };
+
             voiceBtn.addEventListener('click', () => {
+                // Kiểm tra mạng trước khi bật
+                if (!navigator.onLine) {
+                    alert("Bạn đang offline. Tính năng giọng nói cần kết nối mạng.");
+                    return;
+                }
+
                 if (voiceBtn.classList.contains('mic-active')) {
                     recognition.stop();
                 } else {
-                    recognition.start();
+                    try {
+                        recognition.start();
+                    } catch (e) {
+                        console.warn("Voice start warning:", e);
+                        recognition.stop();
+                        setTimeout(() => {
+                            try { recognition.start(); } catch (err) {}
+                        }, 200); // Thử lại sau 200ms nếu bị kẹt
+                    }
                 }
             });
         } else {
-            voiceBtn.style.display = 'none'; // Hide if not supported
-            console.warn("Browser does not support Speech Recognition");
+            voiceBtn.style.display = 'none'; // Ẩn nút nếu trình duyệt không hỗ trợ
+            console.warn("Trình duyệt không hỗ trợ Web Speech API.");
         }
 
         // --- IMAGE HANDLING ---
