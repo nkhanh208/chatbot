@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BCK AI Chatbot (Clean Luxury Edition)</title>
+    <title>BCK AI - Voice & Vision Edition</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Be Vietnam Pro & JetBrains Mono -->
@@ -30,13 +30,13 @@
                         }
                     },
                     animation: {
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'glow': 'glow 2s ease-in-out infinite alternate',
+                        'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'message-in': 'fadeIn 0.4s ease-out forwards',
                     },
                     keyframes: {
-                        glow: {
-                            '0%': { boxShadow: '0 0 5px #06b6d4, 0 0 10px #06b6d4' },
-                            '100%': { boxShadow: '0 0 10px #22d3ee, 0 0 20px #22d3ee' },
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
                         }
                     }
                 }
@@ -92,6 +92,12 @@
             margin: 0.5rem 0;
         }
 
+        .markdown-body img {
+            border-radius: 8px;
+            max-width: 100%;
+            border: 1px solid #334155;
+        }
+
         /* --- UTILITIES --- */
         .glass-panel {
             background: rgba(15, 23, 42, 0.6);
@@ -99,15 +105,6 @@
             border: 1px solid rgba(148, 163, 184, 0.1);
         }
         
-        .message-animation {
-            animation: fadeIn 0.4s ease-out forwards;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
         .typing-dot {
             animation: typing 1.4s infinite ease-in-out both;
         }
@@ -116,6 +113,18 @@
         @keyframes typing {
             0%, 80%, 100% { transform: scale(0); }
             40% { transform: scale(1); }
+        }
+
+        /* Microphone Pulse */
+        .mic-active {
+            animation: micPulse 1.5s infinite;
+            background-color: #ef4444 !important;
+            color: white !important;
+        }
+        @keyframes micPulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
     </style>
 </head>
@@ -141,33 +150,28 @@
                           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                           <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                         </span>
-                        <span class="text-xs text-slate-400 font-mono tracking-wider">Sẵn sàng hỗ trợ</span>
+                        <span class="text-xs text-slate-400 font-mono tracking-wider">Chat Bot Ready</span>
                     </div>
                 </div>
             </div>
             
-            <div class="flex items-center gap-1">
-                <span class="w-1 h-1 rounded-full bg-slate-600"></span>
-                <span class="w-1 h-1 rounded-full bg-slate-600"></span>
-                <span class="w-1 h-1 rounded-full bg-slate-600"></span>
-                <span class="w-1 h-1 rounded-full bg-slate-600"></span>
-                <span class="w-1 h-1 rounded-full bg-slate-600"></span>
-            </div>
+            <button id="clear-btn" class="p-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-red-400 transition-colors" title="Xóa lịch sử chat">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+            </button>
         </header>
 
         <!-- CHAT AREA -->
         <div id="chat-container" class="flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth">
             <!-- Bot Welcome Message -->
-            <div class="flex gap-4 message-animation">
+            <div class="flex gap-4 animate-message-in">
                 <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-cyan-500 to-blue-600 flex-shrink-0 flex items-center justify-center mt-1 shadow-md shadow-cyan-500/10">
                     <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                 </div>
                 <div class="flex flex-col gap-1 max-w-[85%]">
-                    <span class="text-xs font-mono text-cyan-400 font-medium tracking-wider mb-1 flex items-center gap-2">
-                        BOT STARTING
-                    </span>
+                    <span class="text-xs font-mono text-cyan-400 font-medium tracking-wider mb-1 flex items-center gap-2">BOT STARTING</span>
                     <div class="p-4 rounded-2xl rounded-tl-none bg-slate-800/80 border border-slate-700/50 shadow-sm backdrop-blur-sm">
                         <div class="markdown-body">
+                            <!-- NỘI DUNG LỜI CHÀO ĐÃ ĐƯỢC THAY ĐỔI -->
                             <p>Chào bạn! 👋 Mình là <strong>BCK AI</strong>.</p>
                             <p>Mình có thể giúp bạn tìm sách, tra cứu thông tin thư viện, hoặc <strong>trò chuyện tự do</strong> về bất cứ chủ đề gì nhé! 😉</p>
                         </div>
@@ -177,31 +181,49 @@
         </div>
 
         <!-- INPUT AREA -->
-        <div class="p-4 border-t border-slate-800/50 bg-slate-900/30 backdrop-blur-md">
-            <!-- Toolbar -->
-            <div class="flex justify-between items-center mb-2 px-1">
-                 <button id="clear-btn" class="text-xs text-slate-500 hover:text-red-400 transition-colors flex items-center gap-1.5 group">
-                    <svg class="w-3.5 h-3.5 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                    Xóa bộ nhớ
-                </button>
-                <div class="text-[10px] font-mono text-slate-600 tracking-widest uppercase">Powered by Gemini</div>
+        <div class="p-4 border-t border-slate-800/50 bg-slate-900/30 backdrop-blur-md flex flex-col gap-2">
+            
+            <!-- Preview Image Area (Hidden by default) -->
+            <div id="image-preview-container" class="hidden px-2 pb-2">
+                <div class="relative inline-block group">
+                    <img id="image-preview" src="" alt="Preview" class="h-20 w-auto rounded-lg border border-cyan-500/50 shadow-lg object-cover">
+                    <button id="remove-image-btn" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5 hover:bg-red-600 shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                    <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors rounded-lg pointer-events-none"></div>
+                </div>
             </div>
 
-            <!-- Input Box -->
-            <div class="relative group">
+            <!-- Input Bar -->
+            <div class="relative group w-full">
                 <div class="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl opacity-20 group-hover:opacity-40 transition duration-500 blur"></div>
                 <div class="relative flex items-end bg-slate-900 rounded-xl border border-slate-700 p-1.5 focus-within:border-cyan-500/50 transition-colors">
+                    
+                    <!-- File Upload Button -->
+                    <input type="file" id="file-input" accept="image/*" class="hidden">
+                    <button id="upload-btn" class="p-3 text-slate-400 hover:text-cyan-400 transition-colors rounded-lg hover:bg-slate-800" title="Gửi ảnh">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+                    </button>
+
                     <textarea 
                         id="user-input" 
                         rows="1" 
-                        placeholder="Nhập tin nhắn..." 
-                        class="w-full bg-transparent text-slate-200 placeholder-slate-500 text-sm px-4 py-3 focus:outline-none resize-none max-h-32"
+                        placeholder="Nhập tin nhắn hoặc gửi ảnh..." 
+                        class="w-full bg-transparent text-slate-200 placeholder-slate-500 text-sm px-2 py-3 focus:outline-none resize-none max-h-32"
                         oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
                     
-                    <button id="send-btn" class="p-2.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white shadow-lg shadow-cyan-500/20 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed mb-0.5 mr-0.5">
+                    <!-- Voice Button -->
+                    <button id="voice-btn" class="p-3 text-slate-400 hover:text-cyan-400 transition-colors rounded-lg hover:bg-slate-800 mr-1" title="Nhập bằng giọng nói">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+                    </button>
+
+                    <button id="send-btn" class="p-3 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white shadow-lg shadow-cyan-500/20 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
                         <svg class="w-5 h-5 transform rotate-90" fill="currentColor" viewBox="0 0 20 20"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path></svg>
                     </button>
                 </div>
+            </div>
+            <div class="text-center">
+                 <div class="text-[10px] font-mono text-slate-600 tracking-widest uppercase">Powered by Gemini 1.5 Flash</div>
             </div>
         </div>
 
@@ -212,37 +234,156 @@
         import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
 
         // --- CONFIGURATION ---
-        // Lưu ý: Đây là client-side, key sẽ bị lộ nếu publish.
-        // Trong thực tế nên gọi qua backend.
-        const API_KEY = "AIzaSyButmIXhNDpf7mWTc00zxseT3KQQ0parFU"; // Để trống, sẽ được điền tự động trong môi trường demo
+        const API_KEY = "AIzaSyButmIXhNDpf7mWTc00zxseT3KQQ0parFU"; 
         
+        // --- ADAPTIVE MODEL DISCOVERY ---
+        async function getAvailableModels(key) {
+            try {
+                const listUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${key}`;
+                const response = await fetch(listUrl);
+                if (!response.ok) return [];
+                const data = await response.json();
+                return data.models
+                    .filter(m => m.supportedGenerationMethods?.includes("generateContent") 
+                              && !m.name.includes("tts") 
+                              && !m.name.includes("embedding"))
+                    .map(m => m.name.replace("models/", ""));
+            } catch (e) {
+                console.warn("Failed to fetch models dynamically:", e);
+                return [];
+            }
+        }
+
+        const PRIORITY_MODELS = ['gemini-1.5-flash', 'gemini-1.5-flash-latest', 'gemini-1.5-pro', 'gemini-pro'];
+
         // DOM Elements
         const chatContainer = document.getElementById('chat-container');
         const userInput = document.getElementById('user-input');
         const sendBtn = document.getElementById('send-btn');
         const clearBtn = document.getElementById('clear-btn');
+        
+        // New Elements for Voice & Image
+        const voiceBtn = document.getElementById('voice-btn');
+        const uploadBtn = document.getElementById('upload-btn');
+        const fileInput = document.getElementById('file-input');
+        const imagePreviewContainer = document.getElementById('image-preview-container');
+        const imagePreview = document.getElementById('image-preview');
+        const removeImageBtn = document.getElementById('remove-image-btn');
 
         // State
         let chatHistory = [];
         let isGenerating = false;
+        let genAI = null;
+        let verifiedModels = [];
+        let currentImageBase64 = null; // Store base64 image data
+        let currentImageMimeType = null;
 
-        // Initialize Gemini (Handle empty key gracefully for UI demo)
-        let genAI, model;
-        try {
-            if (API_KEY) {
-                genAI = new GoogleGenerativeAI(API_KEY);
-                model = genAI.getGenerativeModel({ model: "gemini-pro" });
-            }
-        } catch (e) {
-            console.warn("Gemini init failed:", e);
+        // Init Gemini
+        if (API_KEY) {
+            genAI = new GoogleGenerativeAI(API_KEY);
+            getAvailableModels(API_KEY).then(models => {
+                if(models.length > 0) {
+                    verifiedModels = PRIORITY_MODELS.filter(p => models.includes(p))
+                                    .concat(models.filter(m => !PRIORITY_MODELS.includes(m)));
+                    console.log("Verified Models:", verifiedModels);
+                }
+            });
         }
 
-        // --- FUNCTIONS ---
+        // --- VOICE RECOGNITION SETUP ---
+        let recognition;
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.lang = 'vi-VN'; // Set Vietnamese as default
+            recognition.interimResults = false;
 
-        function addMessage(role, text) {
+            recognition.onstart = () => {
+                voiceBtn.classList.add('mic-active');
+                userInput.placeholder = "Đang nghe...";
+            };
+
+            recognition.onend = () => {
+                voiceBtn.classList.remove('mic-active');
+                userInput.placeholder = "Nhập tin nhắn hoặc gửi ảnh...";
+                userInput.focus();
+            };
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                userInput.value += (userInput.value ? ' ' : '') + transcript;
+                // Auto adjust height
+                userInput.style.height = 'auto';
+                userInput.style.height = userInput.scrollHeight + 'px';
+            };
+
+            voiceBtn.addEventListener('click', () => {
+                if (voiceBtn.classList.contains('mic-active')) {
+                    recognition.stop();
+                } else {
+                    recognition.start();
+                }
+            });
+        } else {
+            voiceBtn.style.display = 'none'; // Hide if not supported
+            console.warn("Browser does not support Speech Recognition");
+        }
+
+        // --- IMAGE HANDLING ---
+        
+        // Convert file to Base64
+        const fileToBase64 = (file) => {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = (error) => reject(error);
+            });
+        };
+
+        uploadBtn.addEventListener('click', () => fileInput.click());
+
+        fileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                alert("Vui lòng chỉ chọn file ảnh.");
+                return;
+            }
+
+            try {
+                const base64Data = await fileToBase64(file);
+                currentImageBase64 = base64Data.split(',')[1]; // Remove data:image/png;base64, prefix
+                currentImageMimeType = file.type;
+                
+                // Show preview
+                imagePreview.src = base64Data;
+                imagePreviewContainer.classList.remove('hidden');
+                userInput.focus();
+            } catch (error) {
+                console.error("Error reading file:", error);
+                alert("Lỗi khi đọc file ảnh.");
+            }
+            
+            // Reset input so same file can be selected again if needed
+            fileInput.value = '';
+        });
+
+        removeImageBtn.addEventListener('click', () => {
+            currentImageBase64 = null;
+            currentImageMimeType = null;
+            imagePreviewContainer.classList.add('hidden');
+            imagePreview.src = '';
+        });
+
+        // --- CHAT FUNCTIONS ---
+
+        function addMessage(role, text, imageSrc = null) {
             const isUser = role === 'user';
             const msgDiv = document.createElement('div');
-            msgDiv.className = `flex gap-4 message-animation ${isUser ? 'flex-row-reverse' : ''}`;
+            msgDiv.className = `flex gap-4 animate-message-in ${isUser ? 'flex-row-reverse' : ''}`;
             
             const avatar = isUser 
                 ? `<div class="w-8 h-8 rounded-full bg-slate-700 flex-shrink-0 flex items-center justify-center mt-1 border border-slate-600"><svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg></div>`
@@ -256,16 +397,21 @@
                 ? "bg-cyan-600/20 border border-cyan-500/30 text-cyan-50 rounded-tr-none"
                 : "bg-slate-800/80 border border-slate-700/50 text-slate-200 rounded-tl-none shadow-sm backdrop-blur-sm";
 
-            // Process Markdown for bot, simple text for user to prevent XSS
             const contentHtml = isUser 
                 ? `<p>${escapeHtml(text)}</p>` 
                 : marked.parse(text);
+
+            let imageHtml = '';
+            if (imageSrc) {
+                imageHtml = `<div class="mb-2"><img src="${imageSrc}" class="rounded-lg max-h-48 border border-white/10" alt="User upload"></div>`;
+            }
 
             msgDiv.innerHTML = `
                 ${avatar}
                 <div class="flex flex-col gap-1 max-w-[85%] ${isUser ? 'items-end' : 'items-start'}">
                     ${label}
                     <div class="p-3.5 px-5 rounded-2xl ${bubbleClass} text-sm leading-relaxed overflow-hidden">
+                        ${imageHtml}
                         <div class="markdown-body">${contentHtml}</div>
                     </div>
                 </div>
@@ -279,7 +425,7 @@
             const id = 'typing-' + Date.now();
             const div = document.createElement('div');
             div.id = id;
-            div.className = 'flex gap-4 message-animation';
+            div.className = 'flex gap-4 animate-message-in';
             div.innerHTML = `
                 <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-cyan-500 to-blue-600 flex-shrink-0 flex items-center justify-center mt-1 opacity-50">
                     <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
@@ -312,63 +458,125 @@
             return div.innerHTML;
         }
 
+        function getMockResponse(text) {
+            return "Chế độ Offline: " + text;
+        }
+
+        // --- CORE GENERATION LOGIC (UPDATED FOR MULTIMODAL) ---
+        async function generateContentWithFallback(userMessage, imageBase64 = null, imageMime = null) {
+            if (!genAI) return { text: getMockResponse(userMessage), usedModel: "MockMode (No Key)" };
+
+            let modelsToTry = verifiedModels.length > 0 ? verifiedModels : PRIORITY_MODELS;
+            if (modelsToTry.length === 0) modelsToTry = ['gemini-1.5-flash'];
+
+            let errors = [];
+
+            for (const modelName of modelsToTry) {
+                try {
+                    const model = genAI.getGenerativeModel({ model: modelName });
+                    
+                    // Construct Payload
+                    let parts = [];
+                    if (userMessage) parts.push({ text: userMessage });
+                    
+                    if (imageBase64 && imageMime) {
+                        // Ensure model supports vision (Flash and Pro do, standard Pro 1.0 does not)
+                        // But we will try anyway, catch error if model is text-only
+                        parts.push({
+                            inlineData: {
+                                data: imageBase64,
+                                mimeType: imageMime
+                            }
+                        });
+                    }
+
+                    // Note: For multimodal in single turn, we use generateContent directly without chat history
+                    // If text-only, we can use startChat for history.
+                    // To keep it simple & robust: if image exists, we do single-turn generateContent (stateless for that turn).
+                    // If no image, we do stateful chat.
+                    
+                    let text = "";
+                    
+                    if (imageBase64) {
+                        const result = await model.generateContent(parts);
+                        const response = await result.response;
+                        text = response.text();
+                    } else {
+                        const chat = model.startChat({ history: chatHistory, generationConfig: { maxOutputTokens: 1000 } });
+                        const result = await chat.sendMessage(userMessage);
+                        const response = await result.response;
+                        text = response.text();
+                    }
+
+                    return { text, usedModel: modelName };
+
+                } catch (e) {
+                    let cleanMsg = e.message || "Unknown error";
+                    if(cleanMsg.includes("404")) cleanMsg = "Not Found (404)";
+                    else if(cleanMsg.includes("429")) cleanMsg = "Rate Limit (429)";
+                    else if(cleanMsg.includes("400")) cleanMsg = "Bad Request (400) - Maybe model doesn't support images";
+                    errors.push(`${modelName}: ${cleanMsg}`);
+                }
+            }
+            
+            console.error("All API models failed.", errors);
+            return { 
+                text: "Xin lỗi, mình không thể kết nối tới máy chủ AI lúc này. (Kiểm tra lại Key hoặc Mạng)", 
+                usedModel: "MockMode",
+                errors: errors 
+            };
+        }
+
         async function handleSend() {
             const text = userInput.value.trim();
-            if (!text || isGenerating) return;
+            // Allow sending if text OR image exists
+            if ((!text && !currentImageBase64) || isGenerating) return;
+
+            // Prepare sending data
+            const sentText = text;
+            const sentImageBase64 = currentImageBase64;
+            const sentImageMime = currentImageMimeType;
+            const displayImageSrc = sentImageBase64 ? `data:${sentImageMime};base64,${sentImageBase64}` : null;
 
             // UI Updates
             userInput.value = '';
             userInput.style.height = 'auto';
-            addMessage('user', text);
+            
+            // Clear preview immediately
+            currentImageBase64 = null;
+            currentImageMimeType = null;
+            imagePreviewContainer.classList.add('hidden');
+            imagePreview.src = '';
+
+            addMessage('user', sentText, displayImageSrc);
             isGenerating = true;
             sendBtn.disabled = true;
 
             const typingId = showTypingIndicator();
 
             try {
-                // Check if API Key is available
-                // Note: For this demo, we mock the response if no key or simple logic
-                // In real app, call your backend or Gemini API here
-                
-                let responseText = "";
+                const result = await generateContentWithFallback(sentText || "Mô tả bức ảnh này", sentImageBase64, sentImageMime);
+                let responseText = result.text;
 
-                if (typeof API_KEY !== 'undefined' && API_KEY !== "") {
-                     // Real API Call logic would go here
-                     // const chat = model.startChat({ history: chatHistory });
-                     // const result = await chat.sendMessage(text);
-                     // responseText = result.response.text();
-                     
-                     // SIMULATED DELAY FOR DEMO
-                     await new Promise(r => setTimeout(r, 1500));
-                     responseText = "Hệ thống đang chạy ở chế độ demo (không có API Key). Nhưng câu hỏi của bạn là: **" + text + "**";
+                removeTypingIndicator(typingId);
+                
+                if (result.usedModel.startsWith("MockMode")) {
+                    const warning = `<span class="text-[10px] text-amber-400 bg-amber-900/30 border border-amber-500/20 px-2 py-1 rounded mb-2 inline-block font-mono">⚠️ CHẾ ĐỘ OFFLINE</span><br>`;
+                    addMessage('bot', warning + responseText);
                 } else {
-                     // MOCK RESPONSE
-                     await new Promise(r => setTimeout(r, 1000));
-                     
-                     // Simple Keyword matching for demo fun
-                     const lowerText = text.toLowerCase();
-                     if (lowerText.includes('xin chào') || lowerText.includes('hi')) {
-                         responseText = "Chào bạn! Mình có thể giúp gì cho bạn hôm nay?";
-                     } else if (lowerText.includes('thư viện') || lowerText.includes('sách')) {
-                         responseText = "Thư viện hiện đang mở cửa. Bạn muốn tìm sách thuộc thể loại nào? (Văn học, Khoa học, Kinh tế...)";
-                     } else if (lowerText.includes('cảm ơn')) {
-                         responseText = "Không có chi! Rất vui được hỗ trợ bạn. 😊";
-                     } else {
-                         responseText = "Cảm ơn bạn đã đặt câu hỏi. Đây là phản hồi mẫu từ giao diện **BCK AI Chatbot**. \n\nĐể hệ thống hoạt động thực tế, vui lòng tích hợp API Key vào mã nguồn.";
-                     }
+                    addMessage('bot', responseText);
+                }
+                
+                // Only push to history if text-only to maintain context flow easily
+                if (!sentImageBase64) {
+                    chatHistory.push({ role: "user", parts: [{ text: sentText }] });
+                    chatHistory.push({ role: "model", parts: [{ text: responseText }] });
                 }
 
-                removeTypingIndicator(typingId);
-                addMessage('bot', responseText);
-                
-                // Update history (simplified)
-                chatHistory.push({ role: "user", parts: text });
-                chatHistory.push({ role: "model", parts: responseText });
-
             } catch (error) {
-                console.error(error);
+                console.error("Critical Error:", error);
                 removeTypingIndicator(typingId);
-                addMessage('bot', "⚠️ Đã xảy ra lỗi khi kết nối. Vui lòng thử lại.");
+                addMessage('bot', "⚠️ Lỗi hệ thống nghiêm trọng.");
             } finally {
                 isGenerating = false;
                 sendBtn.disabled = false;
@@ -389,14 +597,14 @@
 
         clearBtn.addEventListener('click', () => {
             chatContainer.innerHTML = '';
-            // Re-add Greeting
+            // NỘI DUNG LỜI CHÀO KHI XÓA LỊCH SỬ CŨNG ĐƯỢC CẬP NHẬT
             const greetingHTML = `
-            <div class="flex gap-4 message-animation">
+            <div class="flex gap-4 animate-message-in">
                 <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-cyan-500 to-blue-600 flex-shrink-0 flex items-center justify-center mt-1 shadow-md shadow-cyan-500/10">
                     <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                 </div>
                 <div class="flex flex-col gap-1 max-w-[85%]">
-                    <span class="text-xs font-mono text-cyan-400 font-medium tracking-wider mb-1 flex items-center gap-2">BOT GREETING</span>
+                    <span class="text-xs font-mono text-cyan-400 font-medium tracking-wider mb-1 flex items-center gap-2">BOT STARTING</span>
                     <div class="p-4 rounded-2xl rounded-tl-none bg-slate-800/80 border border-slate-700/50 shadow-sm backdrop-blur-sm">
                         <div class="markdown-body">
                             <p>Chào bạn! 👋 Mình là <strong>BCK AI</strong>.</p>
@@ -412,4 +620,3 @@
     </script>
 </body>
 </html>
-
