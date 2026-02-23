@@ -213,7 +213,7 @@
                         class="w-full bg-transparent text-slate-200 placeholder-slate-500 text-sm px-2 py-3 focus:outline-none resize-none max-h-32"
                         oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
                     
-                    <!-- Voice Button (Updated with type="button") -->
+                    <!-- Voice Button -->
                     <button type="button" id="voice-btn" class="p-3 text-slate-400 hover:text-cyan-400 transition-colors rounded-lg hover:bg-slate-800 mr-1 group relative" title="Nhập bằng giọng nói">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
                     </button>
@@ -515,6 +515,66 @@
             return "Chế độ Offline: " + text;
         }
 
+        // --- KIẾN THỨC MẶC ĐỊNH (HARDCODED RESPONSES) ---
+        const predefinedAnswers = [
+            {
+                keywords: ["giờ mở cửa", "thời gian mở cửa", "mấy giờ mở", "khi nào mở", "lịch làm việc", "giờ hoạt động", "mở cửa lúc mấy giờ"],
+                response: "**Giờ mở cửa của thư viện:**\n\n1. **Sáng:** 7h00 - 11h30\n2. **Chiều:** 13h30 - 16h30\n3. *(Nghỉ Thứ 7, Chủ Nhật và ngày lễ)*"
+            },
+            {
+                keywords: ["giới thiệu", "trường nào", "thông tin thư viện", "bck tech", "ai tạo ra", "thư viện tên gì", "của ai"],
+                response: "Chào mừng bạn đến với thư viện **Trường Trung Học Phổ Thông Nguyễn Hữu Cảnh**! 🏫\n\nĐây là Dự án Thư viện số (Môn Tin học - Năm học 2025-2026) do nhóm **BCK Tech 10** thực hiện, bao gồm:\n1. Đặng Quang Cảnh (Trưởng nhóm)\n2. Nguyễn Ngọc Khánh\n3. Nguyễn Quốc Bảo\nGiáo viên hướng dẫn: Thầy Nguyễn Sa Duy."
+            },
+            {
+                keywords: ["địa chỉ", "ở đâu", "liên hệ", "số điện thoại", "địa điểm", "hotline"],
+                response: "📍 **Địa chỉ:** Khu phố 5 - Long Hưng - Đồng Nai\n📞 **Hotline:** 0xxx.xxx.xxx *(Bạn có thể liên hệ hotline để được hỗ trợ nhanh nhất nhé)*"
+            },
+            {
+                keywords: ["có sách gì", "kho sách", "tìm sách", "loại sách"],
+                response: "**Kho sách của thư viện NHC gồm các danh mục chính:**\n📚 **SÁCH THPT**\n💡 **SÁCH KỸ NĂNG**\n📝 **TÀI LIỆU ÔN THI**\n\nBạn muốn tìm kiếm loại tài liệu nào? Gõ tên loại sách để mình tư vấn thêm nhé!"
+            },
+            {
+                keywords: ["sách thpt", "sách giáo khoa", "sách tham khảo", "lớp 10", "lớp 11", "lớp 12"],
+                response: "📚 **Sách THPT:** Thư viện cung cấp đầy đủ sách giáo khoa, sách bài tập và sách tham khảo cho các khối 10, 11, 12. Bạn có thể truy cập mục **Kho sách > Sách THPT** trên Website để xem danh sách chi tiết nhé."
+            },
+            {
+                keywords: ["sách kỹ năng", "kỹ năng sống", "phát triển bản thân", "sống đẹp"],
+                response: "💡 **Sách Kỹ Năng:** Thư viện có rất nhiều tựa sách hay về phát triển bản thân, kỹ năng giao tiếp, quản lý thời gian... Hãy ghé mục **Kho sách > Sách Kỹ Năng** để khám phá và mượn đọc nhé!"
+            },
+            {
+                keywords: ["sách hay", "gợi ý sách", "sách được yêu thích", "sách nổi bật"],
+                response: "⭐ **Sách Hay:** Đây là danh sách được chọn lọc dựa trên nội dung hấp dẫn, giá trị kiến thức và mức độ được bạn đọc yêu thích nhất. Bạn hãy vào mục **Sách hay** trên trang chủ để xem các đề xuất tuần này nhé!"
+            },
+            {
+                keywords: ["đăng ký mượn", "mượn sách", "làm sao để mượn", "cách mượn", "mượn online"],
+                response: "**Hướng dẫn mượn sách:**\nBạn có thể tra cứu nhanh tình trạng sách và **gửi yêu cầu mượn trực tuyến** thông qua mục **Đăng kí > Mượn sách** trên Website thư viện. \n\n*Lưu ý: Bạn cần có Thẻ thư viện trước khi mượn nhé!*"
+            },
+            {
+                keywords: ["thẻ thư viện", "làm thẻ", "đăng ký thẻ", "tạo thẻ"],
+                response: "💳 **Đăng ký thẻ thư viện:**\nĐể mượn sách và sử dụng các dịch vụ của thư viện, bạn cần có thẻ. Bạn có thể đăng ký làm thẻ trực tuyến rất dễ dàng tại mục **Đăng kí > Thẻ thư viện** trên trang web."
+            },
+            {
+                keywords: ["nội quy", "quy định", "luật thư viện", "hướng dẫn chung"],
+                response: "📜 **Nội quy thư viện:**\nKhi sử dụng thư viện, mong bạn giữ trật tự, bảo quản sách cẩn thận và tuân thủ thời hạn trả sách. Để xem chi tiết các quy định chung và quy định mượn sách, bạn vui lòng truy cập mục **Nội quy & Hướng dẫn** trên Menu nhé."
+            },
+            {
+                keywords: ["đăng nhập", "tài khoản", "quên mật khẩu", "vào hệ thống"],
+                response: "🔐 **Đăng nhập hệ thống:**\nBạn vui lòng chọn mục **Đăng Nhập** trên thanh Menu để truy cập vào tài khoản cá nhân. Tại đây bạn có thể theo dõi sách đang mượn và lịch sử đọc của mình."
+            }
+        ];
+
+        function getPredefinedResponse(text) {
+            if (!text) return null;
+            // Chuyển đổi tin nhắn về chữ thường để dễ so khớp từ khóa
+            const lowerText = text.toLowerCase();
+            for (const item of predefinedAnswers) {
+                if (item.keywords.some(kw => lowerText.includes(kw))) {
+                    return item.response;
+                }
+            }
+            return null; // Không khớp từ khóa nào
+        }
+
         // --- CORE GENERATION LOGIC (UPDATED FOR MULTIMODAL) ---
         async function generateContentWithFallback(userMessage, imageBase64 = null, imageMime = null) {
             if (!genAI) return { text: getMockResponse(userMessage), usedModel: "MockMode (No Key)" };
@@ -533,8 +593,7 @@
                     if (userMessage) parts.push({ text: userMessage });
                     
                     if (imageBase64 && imageMime) {
-                        // Ensure model supports vision (Flash and Pro do, standard Pro 1.0 does not)
-                        // But we will try anyway, catch error if model is text-only
+                        // Ensure model supports vision
                         parts.push({
                             inlineData: {
                                 data: imageBase64,
@@ -543,11 +602,6 @@
                         });
                     }
 
-                    // Note: For multimodal in single turn, we use generateContent directly without chat history
-                    // If text-only, we can use startChat for history.
-                    // To keep it simple & robust: if image exists, we do single-turn generateContent (stateless for that turn).
-                    // If no image, we do stateful chat.
-                    
                     let text = "";
                     
                     if (imageBase64) {
@@ -608,19 +662,35 @@
             const typingId = showTypingIndicator();
 
             try {
-                const result = await generateContentWithFallback(sentText || "Mô tả bức ảnh này", sentImageBase64, sentImageMime);
-                let responseText = result.text;
+                let responseText = "";
+                let isOffline = false;
+
+                // 1. Kiểm tra câu trả lời mặc định trước (Chỉ áp dụng khi không gửi ảnh)
+                const predefined = getPredefinedResponse(sentText);
+                
+                if (predefined && !sentImageBase64) {
+                    // Giả lập thời gian suy nghĩ một chút cho tự nhiên (0.6s)
+                    await new Promise(resolve => setTimeout(resolve, 600));
+                    responseText = predefined;
+                } else {
+                    // 2. Nếu không có mẫu mặc định, gọi AI
+                    const result = await generateContentWithFallback(sentText || "Mô tả bức ảnh này", sentImageBase64, sentImageMime);
+                    responseText = result.text;
+                    if (result.usedModel.startsWith("MockMode")) {
+                        isOffline = true;
+                    }
+                }
 
                 removeTypingIndicator(typingId);
                 
-                if (result.usedModel.startsWith("MockMode")) {
+                if (isOffline) {
                     const warning = `<span class="text-[10px] text-amber-400 bg-amber-900/30 border border-amber-500/20 px-2 py-1 rounded mb-2 inline-block font-mono">⚠️ CHẾ ĐỘ OFFLINE</span><br>`;
                     addMessage('bot', warning + responseText);
                 } else {
                     addMessage('bot', responseText);
                 }
                 
-                // Only push to history if text-only to maintain context flow easily
+                // Cập nhật vào lịch sử chat để AI nhớ ngữ cảnh
                 if (!sentImageBase64) {
                     chatHistory.push({ role: "user", parts: [{ text: sentText }] });
                     chatHistory.push({ role: "model", parts: [{ text: responseText }] });
@@ -673,5 +743,3 @@
     </script>
 </body>
 </html>
-
-
