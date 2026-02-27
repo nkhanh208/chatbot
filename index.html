@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BCK AI - Premium Edition (Ultra)</title>
+    <title>Trợ lý Thư viện NHC</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Be Vietnam Pro & JetBrains Mono -->
-    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+    <!-- Font Be Vietnam Pro & Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <!-- Marked.js for Markdown rendering -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <!-- Highlight.js for Syntax Highlighting -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    <!-- Highlight.js for Syntax Highlighting (Light Theme) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -22,47 +22,28 @@
                 extend: {
                     fontFamily: { 
                         sans: ['Be Vietnam Pro', 'sans-serif'], 
-                        mono: ['JetBrains Mono', 'monospace'] 
+                        inter: ['Inter', 'sans-serif'] 
                     },
                     colors: {
-                        cyber: {
-                            dark: '#020617',
-                            panel: '#0f172a',
-                            primary: '#06b6d4',
-                            glow: '#22d3ee',
-                            accent: '#6366f1',
-                            text: '#e2e8f0'
-                        },
-                        neon: {
-                            cyan: '#00f5ff',
-                            purple: '#bf00ff',
-                            pink: '#ff006e',
-                            blue: '#3a86ff'
+                        library: {
+                            blue: '#2563eb',
+                            light: '#eff6ff',
+                            text: '#334155',
+                            border: '#e2e8f0'
                         }
                     },
                     animation: {
-                        'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                         'message-in': 'fadeIn 0.4s ease-out forwards',
-                        'glow-pulse': 'glowPulse 2s ease-in-out infinite',
-                        'float': 'float 3s ease-in-out infinite',
-                        'shimmer': 'shimmer 2s linear infinite'
+                        'float': 'float 6s ease-in-out infinite',
                     },
                     keyframes: {
                         fadeIn: {
-                            '0%': { opacity: '0', transform: 'translateY(10px) scale(0.95)' },
-                            '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
-                        },
-                        glowPulse: {
-                            '0%, 100%': { boxShadow: '0 0 20px rgba(0, 245, 255, 0.3)' },
-                            '50%': { boxShadow: '0 0 40px rgba(0, 245, 255, 0.6)' },
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
                         },
                         float: {
                             '0%, 100%': { transform: 'translateY(0)' },
                             '50%': { transform: 'translateY(-10px)' },
-                        },
-                        shimmer: {
-                            '0%': { backgroundPosition: '-200% 0' },
-                            '100%': { backgroundPosition: '200% 0' },
                         }
                     }
                 }
@@ -71,109 +52,106 @@
     </script>
 
     <style>
-        /* --- BACKGROUND ANIMATION --- */
-        .animated-bg {
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            transition: background 1s ease-in-out;
-        }
-        
-        /* Themes */
-        .theme-cyberpunk { background-image: linear-gradient(-45deg, #0a0a0a, #1a1a2e, #16213e, #0f3460); }
-        .theme-sunset { background-image: linear-gradient(-45deg, #2b0f4c, #4a0e4e, #811d5e, #fd3a69); }
-        .theme-emerald { background-image: linear-gradient(-45deg, #022c22, #064e3b, #0f766e, #0369a1); }
-        
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        /* --- CLEAN LIGHT BACKGROUND --- */
+        body {
+            background-color: #f8fafc;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(217,100%,90%,1) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, hsla(204,100%,90%,1) 0px, transparent 50%);
+            background-attachment: fixed;
         }
 
-        /* Floating particles */
+        /* Floating Light Particles */
         .particles {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            overflow: hidden;
-            z-index: 0;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; overflow: hidden; z-index: 0;
         }
         .particle {
             position: absolute;
-            width: 4px;
-            height: 4px;
-            background: rgba(0, 245, 255, 0.5);
+            background: rgba(37, 99, 235, 0.1);
             border-radius: 50%;
-            animation: floatParticle 15s infinite;
+            animation: floatParticle 20s infinite linear;
         }
         @keyframes floatParticle {
-            0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translateY(-100vh) scale(1.5); opacity: 0; }
         }
 
         /* --- SCROLLBAR --- */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { 
-            background: linear-gradient(180deg, #00f5ff, #bf00ff); 
-            border-radius: 3px; 
+            background: #cbd5e1; 
+            border-radius: 10px; 
         }
         ::-webkit-scrollbar-thumb:hover { 
-            background: linear-gradient(180deg, #00f5ff, #3a86ff); 
+            background: #94a3b8; 
         }
 
-        /* --- MARKDOWN STYLES --- */
-        .markdown-body { font-size: 0.95rem; line-height: 1.7; color: #e2e8f0; }
+        /* --- MARKDOWN STYLES (LIGHT MODE) --- */
+        .markdown-body { font-size: 0.95rem; line-height: 1.7; color: #334155; }
         .markdown-body p { margin-bottom: 0.75rem; }
         .markdown-body p:last-child { margin-bottom: 0; }
-        .markdown-body strong { color: #67e8f9; font-weight: 600; }
-        .markdown-body em { color: #a5b4fc; }
+        .markdown-body strong { color: #0f172a; font-weight: 600; }
+        .markdown-body em { color: #475569; }
         .markdown-body code:not(pre code) { 
-            font-family: 'JetBrains Mono', monospace; 
-            background: rgba(0, 245, 255, 0.1); 
+            font-family: 'Inter', monospace; 
+            background: #f1f5f9; 
             padding: 0.2em 0.4em; 
-            border-radius: 4px; 
-            color: #00f5ff; 
+            border-radius: 6px; 
+            color: #2563eb; 
             font-size: 0.85em;
-            border: 1px solid rgba(0, 245, 255, 0.2);
+            border: 1px solid #e2e8f0;
         }
         .markdown-body pre { 
-            background: #282c34 !important; /* Atom One Dark background */
+            background: #f8fafc !important; 
             padding: 1rem; 
-            border-radius: 8px; 
+            border-radius: 12px; 
             overflow-x: auto; 
             margin: 0.5rem 0;
-            border: 1px solid rgba(0, 245, 255, 0.3);
-            font-family: 'JetBrains Mono', monospace;
+            border: 1px solid #e2e8f0;
+            font-family: 'Inter', monospace;
             font-size: 0.85em;
         }
         .markdown-body ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 0.75rem; }
         .markdown-body ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 0.75rem; }
         .markdown-body li { margin-bottom: 0.25rem; }
-        .markdown-body a { color: #00f5ff; text-decoration: none; border-bottom: 1px dashed #00f5ff; transition: all 0.2s; }
-        .markdown-body a:hover { color: #bf00ff; border-bottom-style: solid; }
+        .markdown-body a { color: #2563eb; text-decoration: none; border-bottom: 1px dashed #2563eb; transition: all 0.2s; }
+        .markdown-body a:hover { color: #1d4ed8; border-bottom-style: solid; }
         .markdown-body blockquote { 
-            border-left: 3px solid #bf00ff; 
+            border-left: 3px solid #3b82f6; 
             padding-left: 1rem; 
-            color: #94a3b8; 
+            color: #475569; 
             font-style: italic;
             margin: 0.5rem 0;
-            background: rgba(191, 0, 255, 0.05);
+            background: #eff6ff;
             padding: 0.5rem 1rem;
             border-radius: 0 8px 8px 0;
         }
-        .markdown-body img { border-radius: 8px; max-width: 100%; border: 1px solid rgba(0, 245, 255, 0.3); }
+        .markdown-body img { border-radius: 8px; max-width: 100%; border: 1px solid #e2e8f0; }
 
-        /* --- GLASS PANEL --- */
+        /* --- GLASS PANEL (TRANSPARENT WHITE) --- */
         .glass-panel {
-            background: rgba(10, 10, 20, 0.7);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 245, 255, 0.15);
-            box-shadow: 0 0 40px rgba(0, 245, 255, 0.1), inset 0 0 40px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
+        }
+        
+        /* Chat bubble styling */
+        .bot-bubble {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+        .user-bubble {
+            background: rgba(239, 246, 255, 0.9); /* Light blue */
+            border: 1px solid rgba(191, 219, 254, 0.8);
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.05);
         }
 
         /* --- UTILITIES --- */
@@ -181,57 +159,51 @@
         .typing-dot:nth-child(1) { animation-delay: -0.32s; }
         .typing-dot:nth-child(2) { animation-delay: -0.16s; }
         @keyframes typing {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1); }
+            0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
+            40% { transform: scale(1); opacity: 1; }
         }
 
         .mic-active {
             animation: micPulse 1.5s infinite;
-            background-color: #ff006e !important;
+            background-color: #ef4444 !important;
             color: white !important;
-            border-color: #ff006e !important;
+            border-color: #ef4444 !important;
         }
         @keyframes micPulse {
-            0% { box-shadow: 0 0 0 0 rgba(255, 0, 110, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(255, 0, 110, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 0, 110, 0); }
-        }
-
-        .send-glow { position: relative; overflow: hidden; }
-        .send-glow::before {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(0, 245, 255, 0.3), transparent);
-            transform: rotate(45deg); animation: shimmer 3s linear infinite;
-        }
-        @keyframes shimmer {
-            0% { transform: translateX(-100%) rotate(45deg); }
-            100% { transform: translateX(100%) rotate(45deg); }
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
 
         .quick-reply {
-            background: linear-gradient(135deg, rgba(0, 245, 255, 0.1), rgba(191, 0, 255, 0.1));
-            border: 1px solid rgba(0, 245, 255, 0.3); transition: all 0.3s ease;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            color: #475569;
+            transition: all 0.3s ease;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
         .quick-reply:hover {
-            background: linear-gradient(135deg, rgba(0, 245, 255, 0.2), rgba(191, 0, 255, 0.2));
-            border-color: #00f5ff; transform: translateY(-2px); box-shadow: 0 5px 20px rgba(0, 245, 255, 0.2);
+            background: #eff6ff;
+            border-color: #93c5fd;
+            color: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.1);
         }
 
         .action-btn-group { opacity: 0; transition: opacity 0.2s; display: flex; gap: 4px; position: absolute; top: 8px; right: 8px; }
         .message-group:hover .action-btn-group { opacity: 1; }
         .action-btn { 
-            padding: 6px; border-radius: 8px; background: rgba(0,0,0,0.4); 
-            color: #94a3b8; transition: all 0.2s; font-size: 12px;
-            border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(4px);
+            padding: 6px; border-radius: 8px; background: rgba(255,255,255,0.9); 
+            color: #64748b; transition: all 0.2s; font-size: 12px;
+            border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
-        .action-btn:hover { color: #fff; background: rgba(0, 245, 255, 0.2); border-color: rgba(0, 245, 255, 0.5); }
+        .action-btn:hover { color: #2563eb; background: #eff6ff; border-color: #bfdbfe; }
 
-        .neon-text { text-shadow: 0 0 10px rgba(0, 245, 255, 0.5), 0 0 20px rgba(0, 245, 255, 0.3), 0 0 30px rgba(0, 245, 255, 0.1); }
-        .status-glow { box-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
+        .status-glow { box-shadow: 0 0 8px rgba(34, 197, 94, 0.4); }
 
-        /* Voice waveform */
+        /* Voice waveform (Blue) */
         .waveform { display: flex; align-items: center; gap: 3px; height: 20px; }
-        .wave-bar { width: 3px; background: #00f5ff; border-radius: 2px; animation: wave 0.5s ease-in-out infinite; }
+        .wave-bar { width: 3px; background: #3b82f6; border-radius: 2px; animation: wave 0.5s ease-in-out infinite; }
         .wave-bar:nth-child(1) { animation-delay: 0s; height: 8px; }
         .wave-bar:nth-child(2) { animation-delay: 0.1s; height: 16px; }
         .wave-bar:nth-child(3) { animation-delay: 0.2s; height: 12px; }
@@ -240,87 +212,80 @@
         @keyframes wave { 0%, 100% { transform: scaleY(0.5); } 50% { transform: scaleY(1); } }
     </style>
 </head>
-<body id="app-body" class="animated-bg theme-cyberpunk h-screen flex items-center justify-center font-sans text-cyber-text overflow-hidden selection:bg-neon-cyan selection:text-black">
+<body id="app-body" class="h-screen flex items-center justify-center font-sans text-library-text overflow-hidden selection:bg-blue-200 selection:text-blue-900">
 
     <!-- Floating Particles -->
     <div class="particles" id="particles"></div>
 
     <!-- MAIN CONTAINER -->
-    <div class="w-full h-full max-w-5xl md:h-[92vh] md:w-[96vw] md:rounded-3xl glass-panel shadow-2xl flex flex-col relative overflow-hidden">
+    <div class="w-full h-full max-w-5xl md:h-[92vh] md:w-[96vw] md:rounded-3xl glass-panel flex flex-col relative overflow-hidden">
         
         <!-- HEADER -->
-        <header class="h-16 px-6 border-b border-cyan-500/20 flex items-center justify-between bg-black/30">
+        <header class="h-16 px-6 border-b border-white/60 bg-white/40 flex items-center justify-between z-10">
             <div class="flex items-center gap-4">
-                <!-- Animated Logo -->
+                <!-- Logo -->
                 <div class="relative">
-                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-neon-cyan via-neon-purple to-neon-blue flex items-center justify-center shadow-lg animate-glow-pulse">
-                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                        </svg>
+                    <div class="w-11 h-11 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
+                        <i class="fas fa-book-open text-white text-lg"></i>
                     </div>
-                    <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-black status-glow"></div>
+                    <div class="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-white status-glow"></div>
                 </div>
                 <div>
-                    <h1 class="font-bold text-xl tracking-wide text-white flex items-center gap-2 neon-text">
-                        BCK AI <span class="px-2 py-0.5 rounded-lg text-[10px] font-mono bg-gradient-to-r from-neon-cyan to-neon-purple text-black font-bold">PREMIUM</span>
+                    <h1 class="font-bold text-lg tracking-tight text-slate-800 flex items-center gap-2">
+                        Thư viện NHC
+                        <span class="px-2 py-0.5 rounded-md text-[10px] font-inter bg-blue-100 text-blue-700 font-semibold border border-blue-200">BCK BOT</span>
                     </h1>
                     <div class="flex items-center gap-2">
                         <div class="waveform" id="status-wave" style="display: none;">
                             <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
                         </div>
-                        <span id="status-text" class="text-xs text-cyan-400 font-mono tracking-wider">Online • Sẵn sàng</span>
+                        <span id="status-text" class="text-xs text-slate-500 font-medium">Trực tuyến • Sẵn sàng hỗ trợ</span>
                     </div>
                 </div>
             </div>
             
             <!-- Header Actions -->
             <div class="flex items-center gap-2">
-                <button id="theme-btn" class="p-2.5 rounded-xl hover:bg-white/10 text-cyan-400 hover:text-neon-purple transition-all" title="Đổi giao diện">
-                    <i class="fas fa-palette"></i>
-                </button>
-                <button id="sound-btn" class="p-2.5 rounded-xl hover:bg-white/10 text-cyan-400 hover:text-neon-pink transition-all" title="Bật/Tắt âm thanh">
+                <button id="sound-btn" class="p-2.5 rounded-xl hover:bg-white text-slate-400 hover:text-blue-600 transition-all border border-transparent hover:border-slate-200 hover:shadow-sm" title="Bật/Tắt âm thanh">
                     <i class="fas fa-volume-up"></i>
                 </button>
-                <button id="clear-btn" class="p-2.5 rounded-xl hover:bg-red-500/20 text-cyan-400 hover:text-red-400 transition-all" title="Xóa lịch sử chat">
-                    <i class="fas fa-trash-alt"></i>
+                <button id="clear-btn" class="p-2.5 rounded-xl hover:bg-red-50 text-slate-400 hover:text-red-500 transition-all border border-transparent hover:border-red-100 hover:shadow-sm" title="Làm mới trò chuyện">
+                    <i class="fas fa-redo"></i>
                 </button>
             </div>
         </header>
 
         <!-- CHAT AREA -->
-        <div id="chat-container" class="flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth">
+        <div id="chat-container" class="flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth z-10 relative">
             <!-- Bot Welcome Message -->
             <div class="flex gap-4 animate-message-in">
-                <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-neon-cyan to-neon-purple flex items-center justify-center mt-1 shadow-lg shadow-neon-cyan/30 flex-shrink-0">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shadow-md flex-shrink-0">
+                    <i class="fas fa-robot text-white"></i>
                 </div>
                 <div class="flex flex-col gap-1 max-w-[85%]">
-                    <span class="text-xs font-mono text-neon-cyan font-medium tracking-wider mb-1 flex items-center gap-2">
-                        <i class="fas fa-robot"></i> BCK AI
-                    </span>
-                    <div class="p-5 rounded-2xl rounded-tl-none bg-gradient-to-br from-black/50 to-purple-900/20 border border-cyan-500/20 shadow-lg backdrop-blur-sm">
+                    <span class="text-xs font-semibold text-blue-600 mb-1 pl-1">Trợ lý Thư viện</span>
+                    <div class="p-5 rounded-2xl rounded-tl-none bot-bubble backdrop-blur-sm">
                         <div class="markdown-body">
-                            <p class="text-lg">Chào bạn! 👋 Mình là <strong class="text-neon-cyan">Trợ lý ảo Thư viện NHC</strong></p>
-                            <p>✨ Mình có thể giúp bạn:</p>
+                            <p class="text-lg">Chào bạn! 👋 Chào mừng đến với <strong class="text-blue-700">Thư viện Nguyễn Hữu Cảnh</strong>.</p>
+                            <p>Mình có thể hỗ trợ bạn:</p>
                             <ul>
-                                <li>🔍 Tra cứu sách và tài liệu học tập</li>
-                                <li>📘 Hướng dẫn thủ tục mượn/trả sách</li>
-                                <li>🏫 Cung cấp thông tin hoạt động của thư viện</li>
-                                <li>🎤 Giải đáp mọi thắc mắc của bạn</li>
+                                <li>🔍 Tra cứu sách, tài liệu, đề thi</li>
+                                <li>📘 Giải đáp quy định mượn/trả sách</li>
+                                <li>🏫 Thông tin về giờ mở cửa, phòng tự học</li>
                             </ul>
-                            <p class="mt-3">Hãy nhập tin nhắn hoặc chọn gợi ý bên dưới nhé! 🚀</p>
+                            <p class="mt-2 text-slate-500">Hãy nhập câu hỏi hoặc chọn gợi ý bên dưới nhé!</p>
                         </div>
                     </div>
                     <!-- Quick Replies -->
-                    <div class="flex flex-wrap gap-2 mt-3">
-                        <button class="quick-reply px-4 py-2 rounded-full text-xs text-cyan-300" onclick="sendQuickReply('Hướng dẫn mình cách mượn sách tại thư viện')">
-                            <i class="fas fa-book-reader mr-1"></i> Cách mượn sách
+                    <div class="flex flex-wrap gap-2 mt-2 pl-1">
+                        <button class="quick-reply px-4 py-2 rounded-full text-xs font-medium" onclick="sendQuickReply('Làm sao để mượn sách về nhà?')">
+                            Cách mượn sách
                         </button>
-                        <button class="quick-reply px-4 py-2 rounded-full text-xs text-cyan-300" onclick="sendQuickReply('Giới thiệu chi tiết về Thư viện NHC')">
-                            <i class="fas fa-university mr-1"></i> Giới thiệu thư viện
+                        <button class="quick-reply px-4 py-2 rounded-full text-xs font-medium" onclick="sendQuickReply('Thư viện mở cửa lúc mấy giờ?')">
+                            Giờ làm việc
                         </button>
-                        <button class="quick-reply px-4 py-2 rounded-full text-xs text-cyan-300" onclick="sendQuickReply('Thư viện mở cửa vào thời gian nào?')">
-                            <i class="fas fa-clock mr-1"></i> Giờ mở cửa
+                        <button class="quick-reply px-4 py-2 rounded-full text-xs font-medium" onclick="sendQuickReply('Giới thiệu một vài cuốn sách hay cho học sinh đi')">
+                            Gợi ý sách hay
                         </button>
                     </div>
                 </div>
@@ -328,53 +293,52 @@
         </div>
 
         <!-- INPUT AREA -->
-        <div class="p-4 border-t border-cyan-500/20 bg-black/40 backdrop-blur-xl flex flex-col gap-3">
+        <div class="p-4 border-t border-white/60 bg-white/50 backdrop-blur-xl flex flex-col gap-3 z-10">
             
             <!-- Preview Image Area -->
             <div id="image-preview-container" class="hidden px-2">
                 <div class="relative inline-block group">
-                    <img id="image-preview" src="" alt="Preview" class="h-24 w-auto rounded-xl border-2 border-neon-cyan/50 shadow-lg object-cover">
-                    <button id="remove-image-btn" class="absolute -top-3 -right-3 bg-neon-pink text-white rounded-full p-2 hover:bg-red-600 shadow-lg transform hover:scale-110 transition-all">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    <img id="image-preview" src="" alt="Preview" class="h-20 w-auto rounded-xl border-2 border-blue-200 shadow-md object-cover bg-white">
+                    <button id="remove-image-btn" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 shadow-md transform hover:scale-110 transition-all">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 </div>
             </div>
 
             <!-- Input Bar -->
-            <div class="relative group w-full">
-                <div class="absolute -inset-0.5 bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-pink rounded-2xl opacity-30 group-hover:opacity-60 transition duration-500 blur-lg group-focus-within:opacity-100"></div>
-                <div class="relative flex items-end bg-black/80 rounded-2xl border border-cyan-500/30 p-2 focus-within:border-neon-cyan/70 transition-colors">
+            <div class="relative w-full">
+                <div class="relative flex items-end bg-white/80 rounded-2xl border border-slate-200 p-1.5 shadow-sm focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
                     
                     <input type="file" id="file-input" accept="image/*" class="hidden">
-                    <button id="upload-btn" class="p-3 text-cyan-400 hover:text-neon-purple hover:bg-white/10 transition-all rounded-xl" title="Gửi ảnh">
-                        <i class="fas fa-image text-lg"></i>
+                    <button id="upload-btn" class="p-3 text-slate-400 hover:text-blue-600 hover:bg-slate-100 transition-all rounded-xl" title="Đính kèm ảnh">
+                        <i class="fas fa-image text-[1.1rem]"></i>
                     </button>
 
                     <textarea 
                         id="user-input" 
                         rows="1" 
-                        placeholder="Nhập tin nhắn..." 
-                        class="w-full bg-transparent text-white placeholder-cyan-500/50 text-sm px-3 py-3 focus:outline-none resize-none max-h-32"
+                        placeholder="Nhập câu hỏi của bạn..." 
+                        class="w-full bg-transparent text-slate-800 placeholder-slate-400 text-sm px-3 py-3 focus:outline-none resize-none max-h-32"
                         oninput="this.style.height = ''; this.style.height = Math.min(this.scrollHeight, 128) + 'px'"></textarea>
                     
-                    <button type="button" id="voice-btn" class="p-3 text-cyan-400 hover:text-neon-pink hover:bg-white/10 transition-all rounded-xl mr-1 group relative" title="Nhập bằng giọng nói">
-                        <i class="fas fa-microphone text-lg"></i>
+                    <button type="button" id="voice-btn" class="p-3 text-slate-400 hover:text-red-500 hover:bg-slate-100 transition-all rounded-xl mr-1" title="Nhập bằng giọng nói">
+                        <i class="fas fa-microphone text-[1.1rem]"></i>
                     </button>
 
-                    <button id="send-btn" class="send-glow p-3 rounded-xl bg-gradient-to-r from-neon-cyan to-neon-purple hover:from-neon-cyan/80 hover:to-neon-purple/80 text-white shadow-lg shadow-neon-cyan/30 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
-                        <i class="fas fa-paper-plane transform rotate-45"></i>
+                    <button id="send-btn" class="p-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/20 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i class="fas fa-paper-plane transform translate-y-[1px] translate-x-[-1px]"></i>
                     </button>
                 </div>
             </div>
             
             <!-- Footer -->
-            <div class="flex items-center justify-between text-[10px] text-cyan-500/50 px-2">
+            <div class="flex items-center justify-between text-[10px] text-slate-400 px-2 font-medium">
                 <div class="flex items-center gap-4 hidden md:flex">
-                    <span><kbd class="px-1.5 py-0.5 bg-white/10 rounded">Enter</kbd> Gửi</span>
-                    <span><kbd class="px-1.5 py-0.5 bg-white/10 rounded">Shift + Enter</kbd> Xuống dòng</span>
+                    <span><kbd class="px-1.5 py-0.5 bg-slate-100 border border-slate-200 rounded text-slate-500">Enter</kbd> Gửi</span>
+                    <span><kbd class="px-1.5 py-0.5 bg-slate-100 border border-slate-200 rounded text-slate-500">Shift + Enter</kbd> Xuống dòng</span>
                 </div>
-                <div class="font-mono tracking-widest text-right w-full md:w-auto">
-                    <i class="fas fa-bolt text-neon-cyan mr-1"></i> Powered by Gemini (Auto-Key)
+                <div class="text-right w-full md:w-auto text-slate-400">
+                    <i class="fas fa-shield-alt text-blue-500 mr-1"></i> AI Thư viện NHC
                 </div>
             </div>
         </div>
@@ -388,79 +352,87 @@
     <script type="module">
         import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
 
-        // --- CẤU HÌNH API KEYS ---
-        const API_KEYS = [
-            "AIzaSyAGf_MPOp14lltY0oLkoJVrad8CH3ebccE", // Key 1 của bạn
-            "AIzaSyDFet1tW5IHcyOV29iwGrc5PJ7UHwCXDj4", 
-            "AIzaSyCtXZ4v-lgPJeD7eTNh7vlaJ3pTHDlisG8"
-        ];
-        let currentKeyIndex = 0;
+        // --- CẤU HÌNH API KEY (CHỈ DÙNG 1 KEY DUY NHẤT) ---
+        const API_KEY = "AIzaSyB-es2y_91I8ddmRlLVuLbdm6prZf7YBiY";
         
-        // --- FEATURE: THEME SWITCHER ---
-        const themes = ['theme-cyberpunk', 'theme-sunset', 'theme-emerald'];
-        let currentTheme = 0;
-        const themeBtn = document.getElementById('theme-btn');
-        const bodyEl = document.getElementById('app-body');
+        let genAI = null;
+        let verifiedModels = [];
+        const PRIORITY_MODELS = ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-2.0-flash-exp'];
+
+        // KHỞI TẠO VÀ QUÉT MODEL KHI VỪA TẢI TRANG
+        if (API_KEY) {
+            genAI = new GoogleGenerativeAI(API_KEY);
+            getAvailableModels(API_KEY).then(models => {
+                if(models.length > 0) {
+                    verifiedModels = PRIORITY_MODELS.filter(p => models.includes(p))
+                                    .concat(models.filter(m => !PRIORITY_MODELS.includes(m)));
+                    console.log("Models khả dụng:", verifiedModels);
+                }
+            });
+        }
+
+        async function getAvailableModels(key) {
+            try {
+                const listUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${key}`;
+                const response = await fetch(listUrl);
+                if (!response.ok) return [];
+                const data = await response.json();
+                return data.models
+                    .filter(m => m.supportedGenerationMethods?.includes("generateContent") 
+                              && !m.name.includes("tts") 
+                              && !m.name.includes("embedding"))
+                    .map(m => m.name.replace("models/", ""));
+            } catch (e) {
+                console.warn("Lỗi khi quét model:", e);
+                return [];
+            }
+        }
         
-        themeBtn.addEventListener('click', () => {
-            bodyEl.classList.remove(themes[currentTheme]);
-            currentTheme = (currentTheme + 1) % themes.length;
-            bodyEl.classList.add(themes[currentTheme]);
-        });
+        // Background particles setup
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                const size = Math.random() * 60 + 20;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (20 + Math.random() * 20) + 's';
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
 
         // --- TEXT TO SPEECH ---
         let isSpeaking = false;
         window.speakMessage = function(btn, text) {
             const icon = btn.querySelector('i');
-            
             if (isSpeaking) {
                 window.speechSynthesis.cancel();
                 isSpeaking = false;
-                // Reset all speaker icons
                 document.querySelectorAll('.fa-stop-circle').forEach(i => i.className = 'fas fa-volume-up text-xs');
                 return;
             }
-
-            // Clean text before reading (remove markdown formatting)
             const cleanText = text.replace(/[*_~`#]/g, '');
             const utterance = new SpeechSynthesisUtterance(cleanText);
             utterance.lang = 'vi-VN';
             utterance.rate = 1.1;
-
             utterance.onstart = () => {
                 isSpeaking = true;
-                icon.className = 'fas fa-stop-circle text-xs text-neon-pink';
+                icon.className = 'fas fa-stop-circle text-xs text-red-500';
             };
-            
             utterance.onend = () => {
                 isSpeaking = false;
                 icon.className = 'fas fa-volume-up text-xs';
             };
-            
             window.speechSynthesis.speak(utterance);
         };
 
         // Sound settings
         let soundEnabled = localStorage.getItem('bck_sound') !== 'false';
         
-        // --- CREATE PARTICLES ---
-        function createParticles() {
-            const container = document.getElementById('particles');
-            for (let i = 0; i < 30; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 15 + 's';
-                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
-                if (Math.random() > 0.5) particle.style.background = 'rgba(191, 0, 255, 0.5)';
-                container.appendChild(particle);
-            }
-        }
-        createParticles();
-
-        // Sử dụng gemini-2.5-flash-preview-09-2025 làm lựa chọn hàng đầu cho môi trường này
-        const PRIORITY_MODELS = ['gemini-2.5-flash-preview-09-2025', 'gemini-2.0-flash-exp', 'gemini-1.5-flash', 'gemini-1.5-flash-latest'];
-
         // DOM Elements
         const chatContainer = document.getElementById('chat-container');
         const userInput = document.getElementById('user-input');
@@ -478,19 +450,8 @@
 
         let chatHistory = [];
         let isGenerating = false;
-        let genAI = null;
         let currentImageBase64 = null;
         let currentImageMimeType = null;
-        let verifiedModels = [];
-
-        function initGenAI() {
-            if (API_KEYS.length > 0 && API_KEYS[currentKeyIndex] && !API_KEYS[currentKeyIndex].includes("THÊM_KEY")) {
-                genAI = new GoogleGenerativeAI(API_KEYS[currentKeyIndex]);
-                return true;
-            }
-            return false;
-        }
-        initGenAI();
 
         function playSound(type) {
             if (!soundEnabled) return;
@@ -500,17 +461,20 @@
             oscillator.connect(gainNode);
             gainNode.connect(audioContext.destination);
             if (type === 'send') {
-                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-                oscillator.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.1);
-                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(1000, audioContext.currentTime + 0.1);
+                gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
                 oscillator.start(audioContext.currentTime);
-                oscillator.stop(audioContext.currentTime + 0.15);
+                oscillator.stop(audioContext.currentTime + 0.1);
             }
         }
 
         function updateSoundBtn() {
             soundBtn.innerHTML = soundEnabled ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
+            if(!soundEnabled) soundBtn.classList.add('text-slate-300');
+            else soundBtn.classList.remove('text-slate-300');
         }
         updateSoundBtn();
         soundBtn.addEventListener('click', () => {
@@ -526,14 +490,14 @@
             recognition = new SpeechRecognition();
             recognition.continuous = false; recognition.lang = 'vi-VN'; recognition.interimResults = false;
             recognition.onstart = () => {
-                voiceBtn.classList.add('mic-active', 'text-white'); voiceBtn.classList.remove('text-cyan-400');
+                voiceBtn.classList.add('mic-active', 'text-white'); voiceBtn.classList.remove('text-slate-400');
                 statusWave.style.display = 'flex'; statusText.textContent = 'Đang nghe...';
                 userInput.placeholder = "Đang nghe giọng nói...";
             };
             recognition.onend = () => {
-                voiceBtn.classList.remove('mic-active', 'text-white'); voiceBtn.classList.add('text-cyan-400');
-                statusWave.style.display = 'none'; statusText.textContent = 'Online • Sẵn sàng';
-                if (userInput.placeholder.includes("nghe")) userInput.placeholder = "Nhập tin nhắn...";
+                voiceBtn.classList.remove('mic-active', 'text-white'); voiceBtn.classList.add('text-slate-400');
+                statusWave.style.display = 'none'; statusText.textContent = 'Trực tuyến • Sẵn sàng hỗ trợ';
+                if (userInput.placeholder.includes("nghe")) userInput.placeholder = "Nhập câu hỏi của bạn...";
                 userInput.focus();
             };
             recognition.onresult = (event) => {
@@ -564,23 +528,20 @@
             imagePreviewContainer.classList.add('hidden'); imagePreview.src = '';
         });
 
-        // --- UI FUNCTIONS ---
         function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
         function scrollToBottom() { chatContainer.scrollTop = chatContainer.scrollHeight; }
 
         function createUserMessage(text, imageSrc = null) {
             const msgDiv = document.createElement('div');
             msgDiv.className = `flex gap-4 animate-message-in message-group flex-row-reverse`;
-            
-            let imageHtml = imageSrc ? `<div class="mb-3"><img src="${imageSrc}" class="rounded-xl max-h-60 border border-neon-cyan/30" alt="Upload"></div>` : '';
-            
+            let imageHtml = imageSrc ? `<div class="mb-3"><img src="${imageSrc}" class="rounded-xl max-h-48 border border-blue-200" alt="Upload"></div>` : '';
             msgDiv.innerHTML = `
-                <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-slate-600 to-slate-800 flex items-center justify-center mt-1 shadow-lg flex-shrink-0 border border-slate-500/30">
-                    <i class="fas fa-user text-slate-300"></i>
+                <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center border border-slate-200 flex-shrink-0">
+                    <i class="fas fa-user text-slate-400"></i>
                 </div>
                 <div class="flex flex-col gap-1 max-w-[85%] items-end relative">
-                    <span class="text-xs font-mono text-slate-400 font-medium tracking-wider mb-1 flex items-center gap-2">Bạn</span>
-                    <div class="p-4 px-5 rounded-2xl bg-gradient-to-br from-neon-cyan/20 to-neon-purple/20 border border-neon-cyan/30 text-white rounded-tr-none text-sm leading-relaxed overflow-hidden shadow-lg backdrop-blur-sm">
+                    <span class="text-xs font-semibold text-slate-500 mb-1 pr-1">Bạn đọc</span>
+                    <div class="p-4 px-5 rounded-2xl user-bubble text-sm leading-relaxed overflow-hidden rounded-tr-none">
                         ${imageHtml}
                         <div class="markdown-body"><p>${escapeHtml(text)}</p></div>
                     </div>
@@ -593,36 +554,26 @@
             const msgDiv = document.createElement('div');
             const uniqueId = 'bot-msg-' + Date.now();
             msgDiv.className = `flex gap-4 animate-message-in message-group`;
-            
             msgDiv.innerHTML = `
-                <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-neon-cyan to-neon-purple flex items-center justify-center mt-1 shadow-lg shadow-neon-cyan/30 flex-shrink-0">
+                <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shadow-md flex-shrink-0">
                     <i class="fas fa-robot text-white"></i>
                 </div>
                 <div class="flex flex-col gap-1 max-w-[85%] items-start relative w-full">
-                    <span class="text-xs font-mono text-neon-cyan font-medium tracking-wider mb-1 flex items-center gap-2">
-                        <i class="fas fa-robot"></i> BCK AI
-                    </span>
-                    <div class="p-4 px-5 rounded-2xl bg-gradient-to-br from-black/50 to-purple-900/20 border border-cyan-500/20 text-slate-200 rounded-tl-none text-sm leading-relaxed shadow-lg backdrop-blur-sm w-full">
+                    <span class="text-xs font-semibold text-blue-600 mb-1 pl-1">Trợ lý Thư viện</span>
+                    <div class="p-4 px-5 rounded-2xl bot-bubble backdrop-blur-sm text-sm leading-relaxed w-full rounded-tl-none">
                         <div id="${uniqueId}" class="markdown-body">
-                            <!-- Typing dot inside -->
-                            <div class="flex items-center gap-1 mt-1 opacity-70">
-                                <div class="w-2 h-2 bg-neon-cyan rounded-full typing-dot"></div>
-                                <div class="w-2 h-2 bg-neon-purple rounded-full typing-dot"></div>
-                                <div class="w-2 h-2 bg-neon-pink rounded-full typing-dot"></div>
+                            <div class="flex items-center gap-1 mt-2 mb-2">
+                                <div class="w-2 h-2 bg-blue-400 rounded-full typing-dot"></div>
+                                <div class="w-2 h-2 bg-blue-500 rounded-full typing-dot"></div>
+                                <div class="w-2 h-2 bg-blue-600 rounded-full typing-dot"></div>
                             </div>
                         </div>
                     </div>
-                    <!-- Actions: Copy & TTS -->
                     <div class="action-btn-group" id="actions-${uniqueId}" style="display:none;">
-                        <button class="action-btn btn-read" title="Đọc văn bản">
-                            <i class="fas fa-volume-up text-xs"></i>
-                        </button>
-                        <button class="action-btn btn-copy" title="Copy">
-                            <i class="fas fa-copy text-xs"></i>
-                        </button>
+                        <button class="action-btn btn-read" title="Đọc văn bản"><i class="fas fa-volume-up text-xs"></i></button>
+                        <button class="action-btn btn-copy" title="Copy"><i class="fas fa-copy text-xs"></i></button>
                     </div>
                 </div>`;
-            
             chatContainer.appendChild(msgDiv);
             scrollToBottom();
             return { container: document.getElementById(uniqueId), actionGroup: document.getElementById(`actions-${uniqueId}`) };
@@ -634,7 +585,7 @@
             });
         }
 
-        // --- TÍNH NĂNG GỬI (ĐÃ FIX LỖI 404) ---
+        // --- HÀM GỬI CHÍNH THỨC ---
         async function handleSend() {
             const text = userInput.value.trim();
             if ((!text && !currentImageBase64) || isGenerating) return;
@@ -651,34 +602,30 @@
 
             createUserMessage(sentText, displayImageSrc);
             isGenerating = true; sendBtn.disabled = true;
-            statusWave.style.display = 'flex'; statusText.textContent = 'Đang trả lời...';
+            statusWave.style.display = 'flex'; statusText.textContent = 'Đang phân tích...';
 
             const { container: botContentBox, actionGroup } = createBotMessageContainer();
 
-            if (!genAI && !initGenAI()) {
-                botContentBox.innerHTML = "<p>⚠️ Vui lòng cấu hình API Key để sử dụng.</p>";
-                finishGeneration(actionGroup, botContentBox, "⚠️ Vui lòng cấu hình API Key để sử dụng.");
+            if (!API_KEY) {
+                botContentBox.innerHTML = "<p class='text-red-500'>⚠️ Vui lòng cấu hình API Key để sử dụng.</p>";
+                finishGeneration(actionGroup, botContentBox, "⚠️ Lỗi: Thiếu API Key.");
                 return;
             }
 
-            let finalFullText = "";
-            let success = false;
-
-            // Lặp qua các API Keys
-            for (let i = 0; i < API_KEYS.length; i++) {
-                if (!API_KEYS[currentKeyIndex] || API_KEYS[currentKeyIndex].includes("THÊM_KEY")) {
-                    currentKeyIndex = (currentKeyIndex + 1) % API_KEYS.length; continue;
+            try {
+                // Nếu chưa quét kịp thì gọi hàm quét, nếu đã có mảng thì lấy model đầu tiên
+                if(verifiedModels.length === 0) {
+                     statusText.textContent = 'Đang nạp dữ liệu...';
+                     let models = await getAvailableModels(API_KEY);
+                     if(models && models.length > 0) {
+                         verifiedModels = PRIORITY_MODELS.filter(p => models.includes(p)).concat(models.filter(m => !PRIORITY_MODELS.includes(m)));
+                     }
                 }
-
-                initGenAI();
-                let keyFailed = false;
-
-                // Chọn model tương thích môi trường hiện tại (gemini-2.5-flash-preview-09-2025)
-                const modelName = verifiedModels.length > 0 ? verifiedModels[0] : "gemini-2.5-flash-preview-09-2025";
                 
-                try {
-                    // --- THÊM SYSTEM INSTRUCTION (PROMPT ẨN) TẠI ĐÂY ---
-                    const systemPrompt = `Bạn là Trợ lý ảo chính thức của Thư viện Nguyễn Hữu Cảnh (NHC). 
+                const modelName = verifiedModels.length > 0 ? verifiedModels[0] : "gemini-1.5-flash";
+                statusText.textContent = 'Đang soạn câu trả lời...';
+
+                const systemPrompt = `Bạn là Trợ lý ảo chính thức của Thư viện Nguyễn Hữu Cảnh (NHC). 
 Tên của bạn là "Trợ lý Thư viện NHC". 
 Giọng điệu: Thân thiện, lễ phép, nhiệt tình, gần gũi với tuổi học trò. Luôn xưng "mình" và gọi người dùng là "bạn" hoặc "các bạn học sinh".
 Nhiệm vụ chính: 
@@ -688,64 +635,49 @@ Nhiệm vụ chính:
 4. Gợi ý những cuốn sách hay phù hợp với lứa tuổi học sinh.
 Lưu ý quan trọng: Nếu người dùng hỏi những câu hỏi độc hại, vi phạm đạo đức hoặc quá lan man ngoài lề (không liên quan đến học tập, sách, giáo dục, thư viện), hãy khéo léo từ chối và hướng họ quay lại chủ đề thư viện sách. Tuyệt đối không cung cấp thông tin sai lệch.`;
 
-                    const model = genAI.getGenerativeModel({ 
-                        model: modelName,
-                        systemInstruction: systemPrompt
-                    });
-                    
-                    if (sentImageBase64) {
-                        const parts = [{ text: sentText || "Mô tả ảnh này" }, { inlineData: { data: sentImageBase64, mimeType: sentImageMime } }];
-                        const result = await model.generateContent(parts);
-                        finalFullText = result.response.text();
-                    } else {
-                        // SỬA LỖI 404: Đổi từ sendMessageStream sang sendMessage (Non-streaming API)
-                        const chat = model.startChat({ history: chatHistory });
-                        const result = await chat.sendMessage(sentText);
-                        finalFullText = result.response.text();
-                    }
-                    
-                    botContentBox.innerHTML = marked.parse(finalFullText);
-                    applySyntaxHighlighting(botContentBox);
-                    scrollToBottom();
-                    success = true;
-
-                } catch (e) {
-                    let err = e.message || String(e);
-                    console.error(`[LỖI] Key thứ ${currentKeyIndex + 1} thất bại:`, err);
-                    finalFullText = `Mã lỗi hệ thống: ${err}`;
-                    
-                    if (err.includes("429") || err.toLowerCase().includes("quota") || err.includes("API key not valid") || err.includes("404")) {
-                        currentKeyIndex = (currentKeyIndex + 1) % API_KEYS.length;
-                        continue; 
-                    } else {
-                        break; 
-                    }
+                const modelConfig = { model: modelName };
+                
+                if (!modelName.includes("gemini-1.0") && !modelName.includes("gemini-pro")) {
+                    modelConfig.systemInstruction = systemPrompt;
                 }
 
-                if (success) break; 
-            }
+                const model = genAI.getGenerativeModel(modelConfig);
+                let finalFullText = "";
+                
+                if (sentImageBase64) {
+                    const parts = [{ text: sentText || "Đây là tài liệu gì?" }, { inlineData: { data: sentImageBase64, mimeType: sentImageMime } }];
+                    const result = await model.generateContent(parts);
+                    finalFullText = result.response.text();
+                } else {
+                    const chat = model.startChat({ history: chatHistory });
+                    const result = await chat.sendMessage(sentText);
+                    finalFullText = result.response.text();
+                }
+                
+                botContentBox.innerHTML = marked.parse(finalFullText);
+                applySyntaxHighlighting(botContentBox);
+                scrollToBottom();
 
-            if (!success) {
-                botContentBox.innerHTML = `
-                <div class="bg-red-900/30 border border-red-500/30 p-3 rounded-lg">
-                    <span class="text-red-400 font-bold"><i class="fas fa-exclamation-triangle mr-1"></i> Kết nối API thất bại</span>
-                    <hr class="border-red-500/20 my-2">
-                    <span class="text-slate-300 text-xs font-mono">${finalFullText}</span>
-                    <p class="text-slate-400 text-xs mt-2">Ghi chú: Lỗi 404 thường do thiết lập môi trường không hỗ trợ Stream hoặc Model không khả dụng.</p>
-                </div>`;
-            } else if (!sentImageBase64) {
                 chatHistory.push({ role: "user", parts: [{ text: sentText }] });
                 chatHistory.push({ role: "model", parts: [{ text: finalFullText }] });
-            }
+                finishGeneration(actionGroup, botContentBox, finalFullText);
 
-            finishGeneration(actionGroup, botContentBox, finalFullText);
+            } catch (error) {
+                console.error("Lỗi:", error);
+                botContentBox.innerHTML = `
+                <div class="bg-red-50 border border-red-200 p-3 rounded-xl mt-2">
+                    <span class="text-red-600 font-semibold"><i class="fas fa-exclamation-triangle mr-1"></i> Rất tiếc, có lỗi xảy ra</span>
+                    <p class="text-slate-600 text-xs mt-1 font-mono">${error.message}</p>
+                </div>`;
+                finishGeneration(actionGroup, botContentBox, `Mã lỗi: ${error.message}`);
+            }
         }
 
         function finishGeneration(actionGroup, botContentBox, fullText) {
             isGenerating = false;
             sendBtn.disabled = false;
             statusWave.style.display = 'none';
-            statusText.textContent = 'Online • Sẵn sàng';
+            statusText.textContent = 'Trực tuyến • Sẵn sàng hỗ trợ';
             userInput.focus();
             
             actionGroup.style.display = 'flex';
@@ -753,7 +685,7 @@ Lưu ý quan trọng: Nếu người dùng hỏi những câu hỏi độc hại
             const btnCopy = actionGroup.querySelector('.btn-copy');
             btnCopy.onclick = function() {
                 navigator.clipboard.writeText(fullText);
-                this.innerHTML = '<i class="fas fa-check text-xs text-green-400"></i>';
+                this.innerHTML = '<i class="fas fa-check text-xs text-emerald-500"></i>';
                 setTimeout(() => this.innerHTML = '<i class="fas fa-copy text-xs"></i>', 1500);
             };
 
@@ -776,30 +708,30 @@ Lưu ý quan trọng: Nếu người dùng hỏi những câu hỏi độc hại
         });
 
         clearBtn.addEventListener('click', () => {
-            if (confirm('Xóa toàn bộ lịch sử chat?')) {
+            if (confirm('Làm mới lại cuộc trò chuyện?')) {
                 chatContainer.innerHTML = '';
                 chatHistory = [];
                 chatContainer.innerHTML = `
                 <div class="flex gap-4 animate-message-in">
-                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-neon-cyan to-neon-purple flex items-center justify-center mt-1 shadow-lg shadow-neon-cyan/30 flex-shrink-0">
+                    <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shadow-md flex-shrink-0">
                         <i class="fas fa-robot text-white"></i>
                     </div>
                     <div class="flex flex-col gap-1 max-w-[85%]">
-                        <span class="text-xs font-mono text-neon-cyan font-medium tracking-wider mb-1 flex items-center gap-2"><i class="fas fa-robot"></i> BCK AI</span>
-                        <div class="p-5 rounded-2xl rounded-tl-none bg-gradient-to-br from-black/50 to-purple-900/20 border border-cyan-500/20 shadow-lg backdrop-blur-sm">
+                        <span class="text-xs font-semibold text-blue-600 mb-1 pl-1">Trợ lý Thư viện</span>
+                        <div class="p-5 rounded-2xl rounded-tl-none bot-bubble backdrop-blur-sm">
                             <div class="markdown-body">
-                                <p>Đã xóa lịch sử. Bạn cần hỗ trợ gì tiếp theo về Thư viện NHC?</p>
+                                <p>Đã làm mới. Bạn cần hỗ trợ gì tiếp theo về Thư viện NHC?</p>
                             </div>
                         </div>
-                        <div class="flex flex-wrap gap-2 mt-3">
-                            <button class="quick-reply px-4 py-2 rounded-full text-xs text-cyan-300" onclick="sendQuickReply('Hướng dẫn mình cách mượn sách tại thư viện')">
-                                <i class="fas fa-book-reader mr-1"></i> Cách mượn sách
+                        <div class="flex flex-wrap gap-2 mt-2 pl-1">
+                            <button class="quick-reply px-4 py-2 rounded-full text-xs font-medium" onclick="sendQuickReply('Làm sao để mượn sách về nhà?')">
+                                Cách mượn sách
                             </button>
-                            <button class="quick-reply px-4 py-2 rounded-full text-xs text-cyan-300" onclick="sendQuickReply('Giới thiệu chi tiết về Thư viện NHC')">
-                                <i class="fas fa-university mr-1"></i> Giới thiệu thư viện
+                            <button class="quick-reply px-4 py-2 rounded-full text-xs font-medium" onclick="sendQuickReply('Thư viện mở cửa lúc mấy giờ?')">
+                                Giờ làm việc
                             </button>
-                            <button class="quick-reply px-4 py-2 rounded-full text-xs text-cyan-300" onclick="sendQuickReply('Thư viện mở cửa vào thời gian nào?')">
-                                <i class="fas fa-clock mr-1"></i> Giờ mở cửa
+                            <button class="quick-reply px-4 py-2 rounded-full text-xs font-medium" onclick="sendQuickReply('Giới thiệu một vài cuốn sách hay cho học sinh đi')">
+                                Gợi ý sách hay
                             </button>
                         </div>
                     </div>
