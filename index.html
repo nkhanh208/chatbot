@@ -355,29 +355,25 @@
     <!-- Sound Effects -->
     <audio id="send-sound" src="data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU"></audio>
 
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- JAVASCRIPT LOGIC DÙNG SDK & TỰ ĐỘNG DÒ MODEL -->
     <script type="module">
         import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
 
-        // --- CẤU HÌNH API KEY ---
-        const API_KEY = "AIzaSyCML4GGDfWHPHGD3uLhT97X8cHn3pM54Sk";
+        // --- CẤU HÌNH API KEY VÀ MODEL ƯU TIÊN ---
+        const API_KEY = "AIzaSyAhbAwort9h5nVCJuK2XdCBiI4hqIp6aJk"; 
         
+        // Danh sách các model muốn dùng (Theo thứ tự ưu tiên)
+        const PRIORITY_MODELS = [
+            'gemini-1.5-flash',
+            'gemini-1.5-flash-latest',
+            'gemini-1.5-pro',
+            'gemini-pro'
+        ];
+
         let genAI = null;
-        let verifiedModels = [];
-        const PRIORITY_MODELS = ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-2.0-flash-exp'];
+        let verifiedModels = []; // Lưu các model thực tế còn khả dụng
 
-        // KHỞI TẠO VÀ QUÉT MODEL KHI VỪA TẢI TRANG
-        if (API_KEY) {
-            genAI = new GoogleGenerativeAI(API_KEY);
-            getAvailableModels(API_KEY).then(models => {
-                if(models.length > 0) {
-                    verifiedModels = PRIORITY_MODELS.filter(p => models.includes(p))
-                                    .concat(models.filter(m => !PRIORITY_MODELS.includes(m)));
-                    console.log("Models khả dụng:", verifiedModels);
-                }
-            });
-        }
-
+        // --- QUÉT VÀ DÒ TÌM MODEL ---
         async function getAvailableModels(key) {
             try {
                 const listUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${key}`;
@@ -394,7 +390,26 @@
                 return [];
             }
         }
-        
+
+        if (API_KEY) {
+            genAI = new GoogleGenerativeAI(API_KEY);
+            // Dò tìm ngay khi trang vừa tải
+            getAvailableModels(API_KEY).then(models => {
+                if(models.length > 0) {
+                    verifiedModels = PRIORITY_MODELS.filter(p => models.includes(p))
+                                    .concat(models.filter(m => !PRIORITY_MODELS.includes(m)));
+                    console.log("Danh sách model khả dụng đã dò được:", verifiedModels);
+                }
+            });
+        }
+
+        // Lịch sử cuộc trò chuyện
+        let chatHistory = [];
+        let isGenerating = false;
+        let currentImageBase64 = null;
+        let currentImageMimeType = null;
+        let currentFileName = null;
+
         // Background particles setup
         function createParticles() {
             const container = document.getElementById('particles');
@@ -412,7 +427,7 @@
         }
         createParticles();
 
-        // --- TEXT TO SPEECH ---
+        // --- TEXT TO SPEECH (Gán vào window vì dùng module) ---
         let isSpeaking = false;
         window.speakMessage = function(btn, text) {
             const icon = btn.querySelector('i');
@@ -456,12 +471,6 @@
         const removeImageBtn = document.getElementById('remove-image-btn');
         const statusText = document.getElementById('status-text');
         const statusWave = document.getElementById('status-wave');
-
-        let chatHistory = [];
-        let isGenerating = false;
-        let currentImageBase64 = null;
-        let currentImageMimeType = null;
-        let currentFileName = null; // Thêm biến lưu tên tệp
 
         function playSound(type) {
             if (!soundEnabled) return;
@@ -532,7 +541,6 @@
             const file = e.target.files[0]; 
             if (!file) return;
             
-            // Allow image, pdf, and text files
             const validTypes = ['image/', 'application/pdf', 'text/plain'];
             const isValid = validTypes.some(type => file.type.startsWith(type));
             
@@ -600,7 +608,7 @@
                     <i class="fas fa-user text-slate-400"></i>
                 </div>
                 <div class="flex flex-col gap-1 max-w-[85%] items-end relative">
-                    <span class="text-xs font-semibold text-slate-500 mb-1 pr-1">Bạn đọc</span>
+                    <span class="text-xs font-semibold text-slate-500 mb-1 pr-1">Bạn </span>
                     <div class="p-4 px-5 rounded-2xl user-bubble text-sm leading-relaxed overflow-hidden rounded-tr-none">
                         ${attachmentHtml}
                         ${text ? `<div class="markdown-body"><p>${escapeHtml(text)}</p></div>` : ''}
@@ -645,7 +653,7 @@
             });
         }
 
-        // --- HÀM GỬI CHÍNH THỨC ---
+        // --- HÀM GỬI VÀ XỬ LÝ MODEL (FALLBACK) ---
         async function handleSend() {
             const text = userInput.value.trim();
             if ((!text && !currentImageBase64) || isGenerating) return;
@@ -669,61 +677,73 @@
 
             const { container: botContentBox, actionGroup } = createBotMessageContainer();
 
-            if (!API_KEY) {
-                botContentBox.innerHTML = "<p class='text-red-500'>⚠️ Vui lòng cấu hình API Key để sử dụng.</p>";
-                finishGeneration(actionGroup, botContentBox, "⚠️ Lỗi: Thiếu API Key.");
-                return;
-            }
-
             try {
-                // Nếu chưa quét kịp thì gọi hàm quét, nếu đã có mảng thì lấy model đầu tiên
-                if(verifiedModels.length === 0) {
-                     statusText.textContent = 'Đang nạp dữ liệu...';
-                     let models = await getAvailableModels(API_KEY);
-                     if(models && models.length > 0) {
-                         verifiedModels = PRIORITY_MODELS.filter(p => models.includes(p)).concat(models.filter(m => !PRIORITY_MODELS.includes(m)));
-                     }
-                }
-                
-                const modelName = verifiedModels.length > 0 ? verifiedModels[0] : "gemini-1.5-flash";
-                statusText.textContent = 'Đang soạn câu trả lời...';
+                if (!genAI) throw new Error("API Key chưa được cấu hình!");
 
                 const systemPrompt = `Bạn là Trợ lý ảo chính thức của Thư viện Nguyễn Hữu Cảnh (NHC). 
 Tên của bạn là "Trợ lý Thư viện NHC". 
 Giọng điệu: Thân thiện, lễ phép, nhiệt tình, gần gũi với tuổi học trò. Luôn xưng "mình" và gọi người dùng là "bạn" hoặc "các bạn học sinh".
 Nhiệm vụ chính: 
 1. Hướng dẫn học sinh cách tra cứu sách, tài liệu học tập.
-2. Giải đáp các quy định mượn/trả sách của thư viện (ví dụ: mượn tối đa 3 cuốn, thời hạn 7 ngày...).
-3. Cung cấp thông tin giờ mở cửa (Sáng: 7h00-11h15, Chiều: 13h00-16h30 từ Thứ 2 đến Thứ 6).
+2. Giải đáp các quy định mượn/trả sách của thư viện.
+3. Cung cấp thông tin giờ mở cửa.
 4. Gợi ý những cuốn sách hay phù hợp với lứa tuổi học sinh.
-Lưu ý quan trọng: Nếu người dùng hỏi những câu hỏi độc hại, vi phạm đạo đức hoặc quá lan man ngoài lề (không liên quan đến học tập, sách, giáo dục, thư viện), hãy khéo léo từ chối và hướng họ quay lại chủ đề thư viện sách. Tuyệt đối không cung cấp thông tin sai lệch.`;
+Lưu ý: Nếu người dùng hỏi những câu hỏi độc hại hoặc lan man ngoài lề, hãy khéo léo từ chối và hướng họ quay lại chủ đề thư viện.`;
 
-                const modelConfig = { model: modelName };
-                
-                if (!modelName.includes("gemini-1.0") && !modelName.includes("gemini-pro")) {
-                    modelConfig.systemInstruction = systemPrompt;
+                // Chạy vòng lặp các model ưu tiên
+                let modelsToTry = verifiedModels.length > 0 ? verifiedModels : PRIORITY_MODELS;
+                let success = false;
+                let finalFullText = "";
+                let lastError = null;
+
+                for (const modelName of modelsToTry) {
+                    try {
+                        // Tùy chọn systemInstruction có thể không hỗ trợ trên các model quá cũ (như gemini-pro bản đầu)
+                        // SDK sẽ tự động xử lý, hoặc ta cấu hình vào history nếu cần thiết.
+                        const modelConfig = { model: modelName };
+                        if (modelName.includes("1.5") || modelName.includes("2.0")) {
+                            modelConfig.systemInstruction = { parts: [{ text: systemPrompt }] };
+                        }
+                        
+                        const model = genAI.getGenerativeModel(modelConfig);
+                        
+                        let parts = [];
+                        if (sentText) parts.push({ text: sentText });
+                        
+                        if (sentImageBase64) {
+                            parts.push({ text: sentText || "Vui lòng phân tích hình ảnh này giúp mình." });
+                            parts.push({ inlineData: { data: sentImageBase64, mimeType: sentImageMime } });
+                        }
+
+                        if (sentImageBase64) {
+                            const result = await model.generateContent(parts);
+                            finalFullText = result.response.text();
+                        } else {
+                            const chat = model.startChat({ history: chatHistory });
+                            const result = await chat.sendMessage(sentText);
+                            finalFullText = result.response.text();
+                        }
+
+                        // Nếu code chạy đến đây tức là Model này đã phản hồi thành công!
+                        success = true;
+                        console.log(`Đã trả lời thành công bằng model: ${modelName}`);
+                        break; 
+                    } catch (e) {
+                        console.warn(`Model ${modelName} thất bại, đang thử model tiếp theo... Lỗi:`, e.message);
+                        lastError = e;
+                    }
                 }
 
-                const model = genAI.getGenerativeModel(modelConfig);
-                let finalFullText = "";
-                
-                if (sentImageBase64) {
-                    const parts = [
-                        { text: sentText || "Vui lòng kiểm tra tài liệu đính kèm này giúp mình nhé." }, 
-                        { inlineData: { data: sentImageBase64, mimeType: sentImageMime } }
-                    ];
-                    const result = await model.generateContent(parts);
-                    finalFullText = result.response.text();
-                } else {
-                    const chat = model.startChat({ history: chatHistory });
-                    const result = await chat.sendMessage(sentText);
-                    finalFullText = result.response.text();
+                // Kiểm tra nếu tất cả model đều xịt
+                if (!success) {
+                    throw lastError || new Error("Tất cả các model đều đang bị quá tải hoặc gặp lỗi.");
                 }
                 
                 botContentBox.innerHTML = marked.parse(finalFullText);
                 applySyntaxHighlighting(botContentBox);
                 scrollToBottom();
 
+                // Lưu lịch sử để giữ ngữ cảnh
                 chatHistory.push({ role: "user", parts: [{ text: sentText }] });
                 chatHistory.push({ role: "model", parts: [{ text: finalFullText }] });
                 finishGeneration(actionGroup, botContentBox, finalFullText);
@@ -759,6 +779,7 @@ Lưu ý quan trọng: Nếu người dùng hỏi những câu hỏi độc hại
             btnRead.onclick = function() { window.speakMessage(this, fullText); };
         }
 
+        // Gán hàm vào window vì dùng <script type="module">
         window.sendQuickReply = function(text) {
             userInput.value = text;
             userInput.style.height = 'auto'; userInput.style.height = Math.min(userInput.scrollHeight, 128) + 'px';
@@ -808,4 +829,3 @@ Lưu ý quan trọng: Nếu người dùng hỏi những câu hỏi độc hại
     </script>
 </body>
 </html>
-
