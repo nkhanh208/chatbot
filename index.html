@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -225,7 +226,7 @@
             <div class="flex items-center gap-4">
                 <!-- Logo -->
                 <div class="relative">
-                    <div class="w-11 h-11 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
+                    <div id="logo-btn" class="w-11 h-11 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30 cursor-pointer select-none transition-transform active:scale-95">
                         <i class="fas fa-book-open text-white text-lg"></i>
                     </div>
                     <div class="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-white status-glow"></div>
@@ -254,6 +255,31 @@
                 </button>
             </div>
         </header>
+
+        <!-- Hidden API Key Panel (Click logo 3 times) - Đặt ngoài header để không bị overflow:hidden -->
+        <div id="api-key-panel" class="hidden fixed top-20 right-6 z-50 bg-white rounded-xl shadow-2xl border border-blue-200 p-4 w-80 animate-message-in">
+            <div class="flex items-center justify-between mb-3">
+                <span class="font-semibold text-sm text-slate-700"><i class="fas fa-key mr-2 text-blue-500"></i>Cài đặt API Key</span>
+                <button id="close-key-panel" class="text-slate-400 hover:text-red-500 transition-colors">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <input 
+                type="password" 
+                id="api-key-input" 
+                placeholder="Nhập API Key..." 
+                class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
+            >
+            <div class="flex gap-2 mt-3">
+                <button id="save-key-btn" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg text-sm font-medium transition-colors">
+                    Lưu
+                </button>
+                <button id="reset-key-btn" class="px-4 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-sm font-medium transition-colors">
+                    Mặc định
+                </button>
+            </div>
+            <p class="text-xs text-slate-400 mt-2"><i class="fas fa-info-circle mr-1"></i>Click logo 3 lần để mở/đóng</p>
+        </div>
 
         <!-- CHAT AREA -->
         <div id="chat-container" class="flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth z-10 relative">
@@ -360,7 +386,11 @@
         import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
 
         // --- CẤU HÌNH API KEY VÀ MODEL ƯU TIÊN ---
-        const API_KEY = "AIzaSyAhbAwort9h5nVCJuK2XdCBiI4hqIp6aJk"; 
+        // API Key mặc định
+        const DEFAULT_API_KEY = "AIzaSyCNBqIRd-9Vnz9mmKseR1TtKh39Rr6Ngew"; 
+        
+        // Lấy API key từ localStorage hoặc dùng mặc định
+        let currentApiKey = localStorage.getItem('bck_api_key') || DEFAULT_API_KEY;
         
         // Danh sách các model muốn dùng (Theo thứ tự ưu tiên)
         const PRIORITY_MODELS = [
@@ -391,17 +421,22 @@
             }
         }
 
-        if (API_KEY) {
-            genAI = new GoogleGenerativeAI(API_KEY);
-            // Dò tìm ngay khi trang vừa tải
-            getAvailableModels(API_KEY).then(models => {
-                if(models.length > 0) {
-                    verifiedModels = PRIORITY_MODELS.filter(p => models.includes(p))
-                                    .concat(models.filter(m => !PRIORITY_MODELS.includes(m)));
-                    console.log("Danh sách model khả dụng đã dò được:", verifiedModels);
-                }
-            });
+        // Khởi tạo API với key hiện tại
+        function initAPI(key) {
+            if (key) {
+                genAI = new GoogleGenerativeAI(key);
+                getAvailableModels(key).then(models => {
+                    if(models.length > 0) {
+                        verifiedModels = PRIORITY_MODELS.filter(p => models.includes(p))
+                                        .concat(models.filter(m => !PRIORITY_MODELS.includes(m)));
+                        console.log("Danh sách model khả dụng đã dò được:", verifiedModels);
+                    }
+                });
+            }
         }
+        
+        // Khởi tạo API ngay khi trang tải
+        initAPI(currentApiKey);
 
         // Lịch sử cuộc trò chuyện
         let chatHistory = [];
@@ -824,6 +859,93 @@ Lưu ý: Nếu người dùng hỏi những câu hỏi độc hại hoặc lan m
                     </div>
                 </div>`;
             }
+        });
+
+        // --- API KEY PANEL LOGIC (Click logo 3 times) ---
+        const logoBtn = document.getElementById('logo-btn');
+        const apiKeyPanel = document.getElementById('api-key-panel');
+        const apiKeyInput = document.getElementById('api-key-input');
+        const saveKeyBtn = document.getElementById('save-key-btn');
+        const resetKeyBtn = document.getElementById('reset-key-btn');
+        const closeKeyPanel = document.getElementById('close-key-panel');
+        
+        let clickCount = 0;
+        let clickTimer = null;
+        
+        // Hiển thị key hiện tại trong input (masked)
+        apiKeyInput.value = currentApiKey ? '••••••••••••••••' : '';
+        
+        logoBtn.addEventListener('click', () => {
+            clickCount++;
+            if (clickTimer) clearTimeout(clickTimer);
+            clickTimer = setTimeout(() => { clickCount = 0; }, 500);
+            
+            if (clickCount >= 3) {
+                clickCount = 0;
+                apiKeyPanel.classList.toggle('hidden');
+            }
+        });
+        
+        closeKeyPanel.addEventListener('click', () => {
+            apiKeyPanel.classList.add('hidden');
+        });
+        
+        saveKeyBtn.addEventListener('click', () => {
+            const newKey = apiKeyInput.value.trim();
+            if (newKey && newKey !== '••••••••••••••••') {
+                localStorage.setItem('bck_api_key', newKey);
+                currentApiKey = newKey;
+                initAPI(currentApiKey);
+                alert('Đã lưu API Key mới!');
+                apiKeyPanel.classList.add('hidden');
+            } else {
+                alert('Vui lòng nhập API Key hợp lệ!');
+            }
+        });
+        
+        resetKeyBtn.addEventListener('click', () => {
+            localStorage.removeItem('bck_api_key');
+            currentApiKey = DEFAULT_API_KEY;
+            apiKeyInput.value = '••••••••••••••••';
+            initAPI(currentApiKey);
+            alert('Đã reset về API Key mặc định!');
+            apiKeyPanel.classList.add('hidden');
+        });
+
+        // --- DELAY GIỮA CÁC TIN NHẮN (400ms để tránh rate limit) ---
+        const DELAY_MS = 400;
+        let messageQueue = [];
+        
+        // Override handleSend để thêm delay
+        const originalHandleSend = handleSend;
+        window.handleSend = async function() {
+            if (isGenerating) {
+                messageQueue.push(true);
+                return;
+            }
+            
+            await originalHandleSend();
+            
+            // Xử lý queue nếu có
+            if (messageQueue.length > 0 && !isGenerating) {
+                setTimeout(() => {
+                    messageQueue.shift();
+                    if (messageQueue.length > 0) {
+                        window.handleSend();
+                    }
+                }, DELAY_MS);
+            }
+        };
+        
+        // Cập nhật event listeners
+        sendBtn.removeEventListener('click', handleSend);
+        sendBtn.addEventListener('click', window.handleSend);
+        
+        userInput.removeEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }
+        });
+        userInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); window.handleSend(); }
         });
 
     </script>
